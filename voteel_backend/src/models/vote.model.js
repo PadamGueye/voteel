@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("votes", {
+    const Vote = sequelize.define("votes", {
         id: {
             field: 'id',
             allowNull: false,
@@ -31,5 +31,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
     
-    return User;
+    return Vote;
 };

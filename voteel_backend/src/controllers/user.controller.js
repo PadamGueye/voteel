@@ -5,21 +5,21 @@ const jwt = require("jsonwebtoken");
 
 exports.create = async (req, res) => {
   console.log("create new user:");
-  console.log("req:", req.headers);
+  console.log("req:", req.body);
 
-  if (!req.headers.email) {
+  if (!req.body.email) {
     return res.status(400).send({
       message: "l'adresse mail ne doit pas etre null!",
     });
   }
-  const id_session = req.headers.id_session ? req.headers.id_session : "";
+
   const user = {
-    firstName: req.headers.firstname,
-    lastName: req.headers.lastname,
-    email: req.headers.email,
-    password: req.headers.password,
-    phone: req.headers.phone,
-    role: req.headers.role,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: req.body.password,
+    phone: req.body.phone,
+    role: req.body.role,
   };
   console.log("user:", user);
 
@@ -72,7 +72,7 @@ exports.findOne = (req, res) => {
 };
 //Update User
 exports.update = (req, res) => {
-  console.log("req.headers:",req.headers);
+  console.log("req.body:",req.body);
 
   const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
@@ -80,13 +80,13 @@ exports.update = (req, res) => {
     .then((user) => {
       if (user) {
         const salt = bcrypt.genSaltSync(10, "a");
-        bcrypt.hash(req.headers.password, salt).then((hash) => {
+        bcrypt.hash(req.body.password, salt).then((hash) => {
           user.password = hash;
-          user.firstName = req.headers.firstname ? req.headers.firstname : user.firstname;
-          user.lastName = req.headers.lastname ? req.headers.lastname : user.lastname;
-          user.role = req.headers.role ? req.headers.role : user.role
-          user.phone = req.headers.phone? req.headers.phone : user.phone
-          user.email = req.headers.role ? req.headers.email : user.email;
+          user.firstName = req.body.firstname ? req.body.firstname : user.firstname;
+          user.lastName = req.body.lastname ? req.body.lastname : user.lastname;
+          user.role = req.body.role ? req.body.role : user.role
+          user.phone = req.body.phone? req.body.phone : user.phone
+          user.email = req.body.role ? req.body.email : user.email;
           User.update(user.dataValues, {
             where: { id: id },
           })

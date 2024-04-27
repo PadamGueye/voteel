@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 module.exports = (sequelize, Sequelize) => {
-    const Candidate = sequelize.define("candidates", {
+    const Position = sequelize.define("postes", {
         id: {
             field: 'id',
             allowNull: false,
@@ -8,43 +8,10 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        firstName: {
-            field: 'prenom',
-            type: Sequelize.STRING,
-            allowNull: false,
-    
-        },
-        lastName: {
+        name: {
             field: 'nom',
             type: Sequelize.STRING,
             allowNull: false
-        },
-        email: {
-            field: 'email',
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
-        },       
-        phone: {
-            field: 'telephone',
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
-        },
-        photo: {
-            field: 'photo',
-            type: Sequelize.STRING,
-            allowNull: false,
-        },       
-        id_position: {
-            field: 'id_poste',
-            type: Sequelize.INTEGER,
-            allowNull: false,
-        },
-        status: {
-            field: 'status',
-            type: Sequelize.STRING,
-            allowNull: true,
         },
     },
     {
@@ -64,5 +31,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     })
     
-    return Candidate;
+    return Position;
 };
