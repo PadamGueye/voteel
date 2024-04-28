@@ -39,7 +39,6 @@ console.log("req:",req);
     email: req[0].email,
     id_student_card: req[0].id_student_card,
     status: req[0].status,
-    position: req[0].position
   };
   console.log("elector:", elector);
 
@@ -116,9 +115,7 @@ const addMultipleElecteurs = async (listElectors, res, errorList, ) => {
 }
 
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  Elector.findAll({ where: condition })
+  Elector.findAll()
     .then((data) => {
       return res.send(data);
     })

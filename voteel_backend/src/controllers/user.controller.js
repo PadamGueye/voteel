@@ -38,9 +38,7 @@ exports.create = async (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  User.findAll({ where: condition })
+  User.findAll()
     .then((data) => {
       return res.send(data);
     })

@@ -88,7 +88,7 @@ const addCandidates = (dataList, res) => {
               phone: element.phone ? element.phone : ""
           })
           if(i == dataList.length-1){
-            return addMultipleCandidates(listObj, res, errorList)                 
+            return addMultipleCandidates(listObj, res, errorList)
           }
       }
   })
@@ -124,9 +124,7 @@ const addMultipleCandidates = async (listCandidates, res, errorList, ) => {
 }
 
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  Candidate.findAll({ where: condition })
+  Candidate.findAll()
     .then((data) => {
       return res.send(data);
     })
@@ -146,13 +144,13 @@ exports.findOne = (req, res) => {
         return res.send(data);
       } else {
         return res.status(404).send({
-          message: `l'utilisateura avec l'id ${id} est introuvable.`,
+          message: `le candidat avec l'id ${id} est introuvable.`,
         });
       }
     })
     .catch((err) => {
       return res.status(500).send({
-        message: `Erreur, impossible de trouver l'utilisateur avec l'id ${id}!`,
+        message: `Erreur, impossible de trouver le candidat avec l'id ${id}!`,
       });
     });
 };

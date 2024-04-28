@@ -93,9 +93,7 @@ const addMultiplePositions = async (listPositions, res, errorList, ) => {
 }
 
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-  Position.findAll({ where: condition })
+  Position.findAll()
     .then((data) => {
       return res.send(data);
     })

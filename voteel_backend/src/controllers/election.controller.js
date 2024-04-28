@@ -2,53 +2,27 @@ const db = require("../models/db.model");
 
 const Election = db.election;
 
-exports.create = (req, res) => {
-  if (Object.keys(req.body).length > 1) {
-      return addCandidates(req.body, res)
-  } else {     
-      return addCandidate(req.body, res)
-  } 
-}
-const addCandidate = async (req, res) => {
-  console.log("addCandidate:");
-  console.log("req:", Object.keys(req).length);
+exports.addElection = async (req, res) => {
+  console.log("addElection:");
+  console.log("req.body:", req.body);
 
-  if (!req.firstName) {
-    return res.status(400).send({
-      message: "le prenom ne doit pas etre null!",
-    });
-  }
-  if (!req.lastName) {
+  if (!req.body.name) {
     return res.status(400).send({
       message: "le nom ne doit pas etre null!",
     });
   }
-  if (!req.photo) {
+  if (!req.body.status) {
     return res.status(400).send({
-      message: "Veuillez ajouter une photo !",
+      message: "le status ne doit pas etre null!",
     });
   }
-  if (!req.position) {
-    return res.status(400).send({
-      message: "Veuillez selectionner le poste a pourvoir !",
-    });
-  }
-  if (!req.email) {
-    return res.status(400).send({
-      message: "l'adresse mail ne doit pas etre null!",
-    });
-  }
-  const candidate = {
-    firstName: req.firstName,
-    lastName: req.lastName,
-    email: req.email,
-    photo: req.photo,
-    phone: req.phone,
-    position: req.position
+  const election = {
+    name: req.body.name,
+    status: req.body.status,
   };
-  console.log("candidate:", candidate);
+  console.log("election:", election);
 
-  await Candidate.create(candidate)
+  await Election.create(election)
     .then((data) => {
       return res.send(data);
     })
@@ -57,78 +31,14 @@ const addCandidate = async (req, res) => {
       return res.status(400).send({
         message:
           err.message ||
-          "Une erreur est survenu lors de la creation de l'utilisateur.",
+          "Une erreur est survenu lors de l'ajout de l'election.",
       });
     });
 };
 
-const addCandidates = (dataList, res) => {
-  console.log("addCandidates:");
-
-  const listObj = []
-  const errorList = []
-      dataList.forEach((element,i) => {
-      if( !element.firstName || !element.lastName || !element.email || !element.photo || !element.position ){
-          errorList.push({
-              "error" : `Les champs ${element.firtsName} ou ${element.lastName} ou ${element.email} ou ${element.photo} ou ${element.position} ne doivent pas etre nul`,
-              "object" : element
-          })
-          if(i == dataList.length-1){
-              return addMultipleCandidates(listObj, res, errorList)
-          }
-      } else {
-          listObj.push({
-              firstName: element.firstName,
-              lastName: element.lastName,
-              email: element.email,
-              position: element.position,
-              phone: element.phone ? element.phone : ""
-          })
-          if(i == dataList.length-1){
-            return addMultipleCandidates(listObj, res, errorList)                 
-          }
-      }
-  })
-} 
-
-
-const addMultipleCandidates = async (listCandidates, res, errorList, ) => {
-  console.log("addMultipleCandidates:");
-  console.log("listCandidates",listCandidates);
-  const listCreated =[]
-  var candidateCreated = []
-  var errorList = []
-  listCandidates.forEach((element , index) => {
-
-      Candidate.create(element)
-          .then(data => {
-              listCreated.push(data.dataValues)
-              if(index == listCandidates.length-1 ){
-                  return res.send({
-                      "created": listCreated,
-                      "errors": errorList,
-                  })
-              }
-          }).catch(error => {
-              errorList.push(error.message)
-              errorList.push( {
-                  "object": element.serialNumber,
-                  "error" : error.message
-              })
-              if(index == listCandidates.length-1 ){  
-                  return res.send({
-                      "created": listCreated,
-                      "errors": errorList,
-                  })
-              }
-          })
-      })
-}
-
 exports.findAll = (req, res) => {
-  const email = req.query.email;
-  var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-  Candidate.findAll({ where: condition })
+ 
+  Election.findAll()
     .then((data) => {
       return res.send(data);
     })
@@ -139,54 +49,116 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-  console.log("id:", id);
-  Candidate.findByPk(id)
+exports.findPendingElections = (req, res) => {
+  const status = "en attente";
+  Election.findAll({
+    where: { status: status }
+  })
     .then((data) => {
-      if (data) {
+      console.log("data:",data);
+      if (data && data.length > 0) {
         return res.send(data);
       } else {
         return res.status(404).send({
-          message: `l'utilisateura avec l'id ${id} est introuvable.`,
+          message: `Il n'y a pas d'élection en attente.`,
         });
       }
     })
     .catch((err) => {
       return res.status(500).send({
-        message: `Erreur, impossible de trouver l'utilisateur avec l'id ${id}!`,
+        message: `Une erreur s'est produite lors de la recherche des élections en attente.`,
       });
     });
 };
-//Update User
+exports.findCompletedElections = (req, res) => {
+  const status = "termine";
+  Election.findAll({
+    where: { status: status }
+  })
+    .then((data) => {
+      console.log("data:",data);
+      if (data && data.length > 0) {
+        return res.send(data);
+      } else {
+        return res.status(404).send({
+          message: `Il n'y a pas d'élection terminée.`,
+        });
+      }
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message: `Une erreur s'est produite lors de la recherche des élections terminées.`,
+      });
+    });
+};
+
+exports.findCurrentElections = (req, res) => {
+  const status = "en cours";
+  Election.findAll({
+    where: { status: status }
+  })
+    .then((data) => {
+      console.log("data:",data);
+      if (data && data.length > 0) {
+        return res.send(data);
+      } else {
+        return res.status(404).send({
+          message: `Il n'y a pas d'élection en cours.`,
+        });
+      }
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message: `Une erreur s'est produite lors de la recherche des élections en cours.`,
+      });
+    });
+};
+
+exports.findOne = (req, res) => {
+  const id = req.params.id;
+  console.log("id:", id);
+  Election.findByPk(id)
+    .then((data) => {
+      if (data) {
+        return res.send(data);
+      } else {
+        return res.status(404).send({
+          message: `l'election avec l'id ${id} est introuvable.`,
+        });
+      }
+    })
+    .catch((err) => {
+      return res.status(500).send({
+        message: `Erreur, impossible de trouver l'election avec l'id ${id}!`,
+      });
+    });
+};
+
 exports.update = (req, res) => {
   console.log("req.body:",req.body);
 
   const id = req.params.id;
+  console.log("req.param.id:",id);
+  // const name = req.params.name;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
-  Candidate.findByPk(id)
-    .then((candidate) => {
-      if (candidate) {
-          candidate.firstName = req.body.firstName ? req.body.firstName : candidate.firstName;
-          candidate.lastName = req.body.lastName ? req.body.lastName : candidate.lastName;
-          candidate.status = req.body.status ? req.body.role : candidate.status
-          candidate.phone = req.body.phone? req.body.phone : candidate.phone
-          candidate.email = req.body.role ? req.body.email : candidate.email;
-          candidate.position = req.body.role ? req.body.position : candidate.position;
-          candidate.photo = req.body.role ? req.body.photo : candidate.photo;
+  Election.findByPk(id)
+    .then((election) => {
+      if (election) {
+          election.name = req.body.name ? req.body.name : election.name;
+          election.status = req.body.status ? req.body.status : election.status;
           
-          Candidate.update(candidate.dataValues, {
+          Election.update(election.dataValues, {
             where: { id: id },
           })
             .then((num) => {
               console.log("num:",num);
               if (num ==1) {
                 return res.send({
-                  message: "Updated candidate succcess!!.",
+                  message: "Updated election succcess!!.",
                 });
               } else {
                 return res.send({
-                  message: `Impossible de modifier le candidat avec l'id=${id} !`,
+                  message: `Impossible de modifier l'election avec l'id=${id} !`,
                 });
               }
             })
@@ -197,7 +169,7 @@ exports.update = (req, res) => {
             });
       } else {
         return res.status(401).send({
-          message: `candidate ${id} not found`,
+          message: `election avec  ${id} not found`,
         });
       }
     })
@@ -213,24 +185,24 @@ exports.delete = (req, res) => {
   console.log("delete:");
   const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
-  Candidate.destroy({
+  Election.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
         return res.send({
-          message: "Candidat supprimé !",
+          message: "Election supprimé !",
         });
       } else {
         return res.send({
-          message: `Impossible de supprimer le candidat avec l'id=${id} !`,
+          message: `Impossible de supprimer le election avec l'id=${id} !`,
         });
       }
     })
     .catch((err) => {
       console.log(err);
       return res.status(500).send({
-        message: "Erreur, Impossible de supprimer le candidat avec l'id" + id,
+        message: "Erreur, Impossible de supprimer le election avec l'id" + id,
       });
     });
 };
