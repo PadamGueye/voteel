@@ -2,12 +2,18 @@ const verifyToken = require('../middleware/authMiddleware');
 const Candidate = require("../controllers/candidate.controller");
 const User = require("../controllers/user.controller");
 const Elector = require("../controllers/elector.controller");
+const Election = require("../controllers/election.controller");
 const Position = require("../controllers/position.controller");
+const Vote = require("../controllers/vote.controller");
+const Token = require("../controllers/token.controller");
 
 module.exports = app => {
   app.route("/user")
     .get(User.findAll)
     .post(User.create)
+
+    app.route("/sendLink")
+    .post(User.sendLink)
 
     app.route('/user/:id')
     .get(verifyToken, User.findOne)
@@ -43,5 +49,31 @@ module.exports = app => {
      .get( Position.findOne)
      .put(Position.update)
      .delete(Position.delete);
+
+
+     app.route("/election")
+     .get(Election.findAll)
+     .post(Election.addElection)
+
+     app.route("/completedElections")
+     .get(Election.findCompletedElections)
+
+     app.route("/currentElections")
+     .get(Election.findCurrentElections)
+
+     app.route("/pendingElections")
+     .get(Election.findPendingElections)
+
+     app.route('/election/:id')
+     .get( Election.findOne)
+     .put(Election.update)
+     .delete(Election.delete);
+
+     app.route("/vote")
+     .get(Vote.findAll)
+     .post(Vote.saveVote)
+
+     app.route("/token")
+     .post(Token.saveToken)
 };
 

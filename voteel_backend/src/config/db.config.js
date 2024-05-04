@@ -6,6 +6,7 @@ exports.DEV = {
     DB: process.env.POSTGRES_DB,
     dialect: process.env.DIALECT_DB,
     PORT:process.env.POSTGRES_PORT,
+    // underscored : true,
     pool: {
         max:5,
         min:0,

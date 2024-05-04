@@ -35,24 +35,12 @@ module.exports = (sequelize, Sequelize) => {
             field: 'status',
             type: Sequelize.STRING,
             allowNull: true
-        },      
-    },
-    {
-    hooks: {
-            beforeCreate: async (user) => {
-                if (user.password) {
-                    const salt = await bcrypt.genSaltSync(10, 'a');
-                    user.password = bcrypt.hashSync(user.password, salt);
-                }
-            },
-            beforeUpdate: async (user) => {
-                if (user.password) {
-                    const salt = await bcrypt.genSaltSync(10, 'a');
-                    user.password = bcrypt.hashSync(user.password, salt);
-                }
-            }
+        }, 
+        id_token: {
+            field: 'id_token',
+            allowNull: true,
+            type: Sequelize.INTEGER
         }
     })
-    
     return Elector;
 };

@@ -1,6 +1,5 @@
-const bcrypt = require("bcrypt");
 module.exports = (sequelize, Sequelize) => {
-    const Position = sequelize.define("postes", {
+    const Token = sequelize.define("tokens", {
         id: {
             field: 'id',
             allowNull: false,
@@ -8,12 +7,15 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        name: {
-            field: 'nom',
+        token: {
+            field: 'token',
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: true
         },
+    },
+    {
+        timestamps: false
     })
     
-    return Position;
+    return Token;
 };

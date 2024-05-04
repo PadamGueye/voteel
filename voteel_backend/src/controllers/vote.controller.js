@@ -27,7 +27,7 @@ const saveAVote = async (req, res) => {
       return res.status(400).send({
         message:
           err.message ||
-          "Une erreur est survenu lors de l'enregistrement du vote.",²²
+          "Une erreur est survenu lors de l'enregistrement du vote.",
       });
     });
 };
@@ -88,7 +88,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.saveAllVote = (req , res) => {}
+exports.startVote = (req , res) => {}
 
 
 
