@@ -9,11 +9,10 @@ const Elector = db.elector;
 
 
 
-
 const generateToken = (id_student_card) => {
   return jwt.sign({ id_student_card }, process.env.SECRETKEY, { expiresIn: "1h" });
 };
-const sendElectorMail = async (emailDest, link) => {
+const sendAMail = async (secret,mailOptions) => {
   console.log("sendMail nodemailer:");
   var transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -24,13 +23,13 @@ const sendElectorMail = async (emailDest, link) => {
       pass: process.env.SENDER_PASSWORD,
     },
   });
-
-  var mailOptions = {
-    from: '"Voteel" <root.voteel@gmail.com>',
-    to: emailDest,
-    subject: "Participation à l'élection du bureau de CEE de l'ESP",
-    html: `<p>Cliquez sur ce lien pour accéder à l'application : ${link} </p>`,
-  };
+  var mailOptions =mailOptions
+  // var mailOptions = {
+  //   from: '"Voteel" <no-reply@voteel.esp.sn>',
+  //   to: emailDest,
+  //   subject: "Participation à l'élection du bureau de CEE de l'ESP",
+  //   html: `<p>Cliquez sur ce lien pour accéder à l'application : ${secret} </p>`,
+  // };
 
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, function (err, info) {
@@ -51,9 +50,16 @@ exports.sendLink = async (req, res) => {
     for (const elector of electors) {
       const token = generateToken(elector.id_student_card);
       const link = "http://localhost:5000?token=" + token;
+      const mailOptions = {
+        from: '"Voteel" <no-reply@voteel.esp.sn>',
+        to: elector.email,
+        subject: "Participation à l'élection du bureau de CEE de l'ESP",
+        html: `<p>Cliquez sur ce lien pour accéder à l'application : ${link} </p>`,
+        };
+        
       console.log("email:", elector.email);
 
-      const sendMailResponse = await sendElectorMail(elector.email, link);
+      const sendMailResponse = await sendAMail(link,mailOptions);
       // const sendMailResponse = {status:200}
 
       if (sendMailResponse.status === 200) {
@@ -80,19 +86,20 @@ exports.sendLink = async (req, res) => {
 };
 
 
-
-
-
-
-
-
 exports.create = async (req, res) => {
   console.log("create new user:");
   console.log("req:", req.body);
 
   if (!req.body.email) {
     return res.status(400).send({
-      message: "l'adresse mail ne doit pas etre null!",
+      message: "L'adresse mail ne doit pas être nulle!",
+    });
+  }
+
+  const allowedRoles = ["non defini", "superviseur", "admin"];
+  if (!allowedRoles.includes(req.body.role)) {
+    return res.status(400).send({
+      message: "Le rôle fourni n'est pas valide!",
     });
   }
 
@@ -115,12 +122,14 @@ exports.create = async (req, res) => {
       return res.status(400).send({
         message:
           err.message ||
-          "Une erreur est survenu lors de la creation de l'utilisateur.",
+          "Une erreur est survenue lors de la création de l'utilisateur.",
       });
     });
 };
 
+
 exports.findAll = (req, res) => {
+
   User.findAll()
     .then((data) => {
       return res.send(data);
@@ -160,6 +169,12 @@ exports.update = (req, res) => {
   User.findByPk(id)
     .then((user) => {
       if (user) {
+        const allowedRoles = ["non defini", "superviseur", "admin"];
+        if (!allowedRoles.includes(req.body.role) && req.body.role!=null) {
+          return res.status(400).send({
+            message: "Le rôle fourni n'est pas valide!",
+          });
+        }
         const salt = bcrypt.genSaltSync(10, "a");
         bcrypt.hash(req.body.password, salt).then((hash) => {
           user.password = hash;
@@ -226,8 +241,13 @@ exports.delete = (req, res) => {
       });
     });
 };
+const generateVerificationCode = () => {
+  return Math.floor(10000000 + Math.random() * 90000000).toString();
+};
+
 
 exports.authenticateUser = async (req, res) => {
+
   try {
       const { email, password } = req.body;
       const user = await User.findOne({
@@ -242,22 +262,62 @@ exports.authenticateUser = async (req, res) => {
       if (!passwordMatch) {
           return res.status(401).json({ error: 'Authentication failed' });
       }
-      console.log("moussa:");
-      console.log("user.id:",user.id);
-      const token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-          expiresIn: '30m',
-      });
-      console.log("token:",token);
-      console.log("user:",user);
-      res.status(200).json({ token,user:{
-          "id": user.id,
-          "firstName": user.firstName,
-          "lastName": user.lastName,
-          "email": user.email,
-          "phone": user.phone,
-          "role": user.role,
-      } });
+      
+    // Générer un code de vérification
+    // const twoFactorCode = jwt.sign({ email }, process.env.TWO_FACTOR_SECRET_KEY, { expiresIn: '10m' });
+    const twoFactorCode = generateVerificationCode();
+    const twoFactorExpiry = new Date();
+    twoFactorExpiry.setMinutes(twoFactorExpiry.getMinutes() + 10);
+
+    // Mettre à jour l'utilisateur avec le code de vérification et l'expiration
+    user.twoFactorCode = twoFactorCode;
+    user.twoFactorExpiry = twoFactorExpiry;
+    await user.save();
+   
+    const mailOptions = {
+      from: '"Voteel" <no-reply@voteel.esp.sn>',
+      to: user.email,
+      // to: 'mousassnd553@gmail.com',
+      subject: 'Votre code de vérification',
+      text: `Votre code de vérification est : ${twoFactorCode}`
+    };
+    const sendAMailResponse = await sendAMail(twoFactorCode,mailOptions);
+    if(sendAMailResponse.status==200){ res.status(200).send('mail envoyé avec success' );}
+
   } catch (error) {
       res.status(500).json({ error: 'Login failed' });
   }
+}
+exports.verifyUserAuthentification = async (req, res) =>{
+  const { email, twoFactorCode } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user || !user.twoFactorCode) {
+      return res.status(401).send({ message: 'Code de vérification invalide' });
+    }
+
+    const now = new Date();
+    if (twoFactorCode !== user.twoFactorCode || now > user.twoFactorExpiry) {
+      user.twoFactorCode = null;
+      user.twoFactorExpiry = null;
+      await user.save();
+      return res.status(401).send({ message: 'Code de vérification expiré ou invalide' });
+    }
+    user.twoFactorCode = null;
+    user.twoFactorExpiry = null;
+    await user.save();
+
+    const token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+          expiresIn: '30m',
+      });
+
+    res.status(200).send({ token,user:{
+      "id": user.id,
+      "firstName": user.firstName,
+      "lastName": user.lastName,
+      "email": user.email,
+      "phone": user.phone,
+      "role": user.role,
+  }});
+
 }

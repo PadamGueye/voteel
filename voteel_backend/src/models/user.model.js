@@ -12,7 +12,6 @@ module.exports = (sequelize, Sequelize) => {
             field: 'prenom',
             type: Sequelize.STRING,
             allowNull: true,
-    
         },
         lastName: {
             field: 'nom',
@@ -23,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
             field: 'email',
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true
+            unique: false
         },
         password: {
             field: 'password',
@@ -40,7 +39,19 @@ module.exports = (sequelize, Sequelize) => {
             field: 'role',
             type: Sequelize.STRING,
             allowNull: false,
+            default: 'non defini',
+            enum: ["non defini", "superviseur", "admin"]
         },
+        twoFactorCode: {
+            field:'two_factor_code',
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        twoFactorExpiry: {
+            field:'two_factor_expiry',
+            type: Sequelize.DATE,
+            allowNull: true
+          }
     },
     {
     hooks: {

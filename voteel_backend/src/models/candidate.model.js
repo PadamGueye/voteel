@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
             field: 'email',
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true
+            unique: false
         },       
         phone: {
             field: 'telephone',
@@ -45,6 +45,8 @@ module.exports = (sequelize, Sequelize) => {
             field: 'status',
             type: Sequelize.STRING,
             allowNull: true,
+            default: null,
+            enum: ["gagné", "perdu",null]
         },
     })
     

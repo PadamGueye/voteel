@@ -23,7 +23,7 @@ module.exports = (sequelize, Sequelize) => {
             field: 'email',
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true
+            unique: false
         },       
         id_student_card: {
             field: 'numero_carte',
@@ -34,7 +34,9 @@ module.exports = (sequelize, Sequelize) => {
         status: {
             field: 'status',
             type: Sequelize.STRING,
-            allowNull: true
+            allowNull: true,
+            default: 'pas voté',
+            enum: ["pas voté", "a voté"]
         }, 
         id_token: {
             field: 'id_token',

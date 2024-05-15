@@ -22,6 +22,8 @@ module.exports = app => {
 
      app.route('/login')
      .post(User.authenticateUser) 
+     app.route('/verify')
+     .post(User.verifyUserAuthentification) 
 
      app.route("/candidate")
      .get(Candidate.findAll)

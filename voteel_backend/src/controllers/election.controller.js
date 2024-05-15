@@ -36,6 +36,15 @@ exports.addElection = async (req, res) => {
     });
 };
 
+
+// exports.createElection = (req,res) => {
+//   const name = req.body.name
+//   const superviseurs = req.body.superviseurs
+//   const candidates = req.body.candidates
+//   const positions = req.body.positions
+//   Election.addElection(req,res)
+// }
+
 exports.findAll = (req, res) => {
  
   Election.findAll()
@@ -133,6 +142,7 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
 
 exports.update = (req, res) => {
   console.log("req.body:",req.body);

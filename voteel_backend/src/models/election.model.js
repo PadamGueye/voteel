@@ -18,7 +18,9 @@ module.exports = (sequelize, Sequelize) => {
         status: {
             field: 'status',
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: false,
+            default: 'en attente',
+            enum: ["en attente", "en cours","terminé"]
         }
     })
     
