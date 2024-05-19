@@ -2,8 +2,9 @@ const db = require("../models/db.model");
 
 const Candidate = db.candidate;
 const Position = db.position;
+const allowedStatus = Candidate.getAttributes().status.values
 
-exports.add = (req, res) => {
+exports.addCandidate = (req, res) => {
   if (Object.keys(req.body).length > 1) {
       return addCandidates(req.body, res)
   } else {
@@ -39,6 +40,11 @@ const addCandidate = async (req, res) => {
       message: "l'adresse mail ne doit pas etre null!",
     });
   }
+  if (!allowedStatus.includes(req[0].status) && req[0].status!=null) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
+    });
+  }
   const id_position = await Position.findOne({ where: { name: req[0].position } });
   const candidate = {
     firstName: req[0].firstName,
@@ -71,6 +77,11 @@ const addCandidates = (dataList, res) => {
   const listObj = []
   const errorList = []
       dataList.forEach((element,i) => {
+        if (!allowedStatus.includes(element.status) && element.status!=null) {
+          return res.status(400).send({
+            message: "Le status fourni n'est pas valide!",
+          });
+        }
       if( !element.firstName || !element.lastName || !element.email || !element.photo || !element.position ){
           errorList.push({
               "error" : `Les champs ${element.firtsName} ou ${element.lastName} ou ${element.email} ou ${element.photo} ou ${element.position} ne doivent pas etre nul`,
@@ -123,7 +134,7 @@ const addMultipleCandidates = async (listCandidates, res, errorList, ) => {
       })
 }
 
-exports.findAll = (req, res) => {
+exports.getCandidates = (req, res) => {
   Candidate.findAll()
     .then((data) => {
       return res.send(data);
@@ -135,8 +146,8 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
+exports.getCandidate = (req, res) => {
+  const id = req.params.candidateId;
   console.log("id:", id);
   Candidate.findByPk(id)
     .then((data) => {
@@ -154,18 +165,22 @@ exports.findOne = (req, res) => {
       });
     });
 };
-//Update User
-exports.update = (req, res) => {
-  console.log("req.body:",req.body);
 
-  const id = req.params.id;
+exports.updateCandidate = (req, res) => {
+  console.log("req.body:",req.body);
+  if (!allowedStatus.includes(req.body.status) && req[0].status!=null) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
+    });
+  }
+  const id = req.params.candidateId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Candidate.findByPk(id)
     .then((candidate) => {
       if (candidate) {
           candidate.firstName = req.body.firstName ? req.body.firstName : candidate.firstName;
           candidate.lastName = req.body.lastName ? req.body.lastName : candidate.lastName;
-          candidate.status = req.body.status ? req.body.role : candidate.status
+          candidate.status = req.body.status ? req.body.status : candidate.status
           candidate.phone = req.body.phone? req.body.phone : candidate.phone
           candidate.email = req.body.role ? req.body.email : candidate.email;
           candidate.position = req.body.role ? req.body.position : candidate.position;
@@ -205,9 +220,9 @@ exports.update = (req, res) => {
 };
 
 // Delete a candidate
-exports.delete = (req, res) => {
+exports.deleteCandidate = (req, res) => {
   console.log("delete:");
-  const id = req.params.id;
+  const id = req.params.candidateId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Candidate.destroy({
     where: { id: id },

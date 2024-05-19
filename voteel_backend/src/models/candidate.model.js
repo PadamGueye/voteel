@@ -43,10 +43,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         status: {
             field: 'status',
-            type: Sequelize.STRING,
+            type:Sequelize.ENUM("gagnant", "perdant","en attente"),
             allowNull: true,
             default: null,
-            enum: ["gagné", "perdu",null]
         },
     })
     

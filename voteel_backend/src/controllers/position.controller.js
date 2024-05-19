@@ -2,7 +2,7 @@ const db = require("../models/db.model");
 
 const Position = db.position;
 
-exports.add = (req, res) => {
+exports.addPosition = (req, res) => {
   if (Object.keys(req.body).length > 1) {
       return addPositions(req.body, res)
   } else {
@@ -92,7 +92,7 @@ const addMultiplePositions = async (listPositions, res, errorList, ) => {
       })
 }
 
-exports.findAll = (req, res) => {
+exports.getPositions = (req, res) => {
   Position.findAll()
     .then((data) => {
       return res.send(data);
@@ -104,7 +104,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
+exports.getPosition = (req, res) => {
   const id = req.params.id;
   console.log("id:", id);
   Position.findByPk(id)
@@ -124,7 +124,7 @@ exports.findOne = (req, res) => {
     });
 };
 //Update position
-exports.update = (req, res) => {
+exports.updatePosition = (req, res) => {
   console.log("req.body:",req.body);
 
   const id = req.params.id;
@@ -167,7 +167,7 @@ exports.update = (req, res) => {
 };
 
 // Delete a candidate
-exports.delete = (req, res) => {
+exports.deletePosition = (req, res) => {
   console.log("delete:");
   const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";

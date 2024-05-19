@@ -33,10 +33,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         status: {
             field: 'status',
-            type: Sequelize.STRING,
+            type:Sequelize.ENUM("pas voté", "a voté"),
             allowNull: true,
             default: 'pas voté',
-            enum: ["pas voté", "a voté"]
         }, 
         id_token: {
             field: 'id_token',

@@ -17,10 +17,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         status: {
             field: 'status',
-            type: Sequelize.STRING,
+            type:Sequelize.ENUM("en attente", "en cours","terminé"),
             allowNull: false,
             default: 'en attente',
-            enum: ["en attente", "en cours","terminé"]
         }
     })
     

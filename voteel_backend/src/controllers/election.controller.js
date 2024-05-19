@@ -2,8 +2,13 @@ const db = require("../models/db.model");
 
 const Election = db.election;
 
-exports.addElection = async (req, res) => {
-  console.log("addElection:");
+const jwt = require('jsonwebtoken');
+const Token = db.token;
+
+const allowedStatus = Election.getAttributes().status.values
+
+exports.createElection = async (req, res) => {
+  console.log("createElection:");
   console.log("req.body:", req.body);
 
   if (!req.body.name) {
@@ -14,6 +19,11 @@ exports.addElection = async (req, res) => {
   if (!req.body.status) {
     return res.status(400).send({
       message: "le status ne doit pas etre null!",
+    });
+  }
+  if (!allowedStatus.includes(req.body.status)) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
     });
   }
   const election = {
@@ -36,16 +46,7 @@ exports.addElection = async (req, res) => {
     });
 };
 
-
-// exports.createElection = (req,res) => {
-//   const name = req.body.name
-//   const superviseurs = req.body.superviseurs
-//   const candidates = req.body.candidates
-//   const positions = req.body.positions
-//   Election.addElection(req,res)
-// }
-
-exports.findAll = (req, res) => {
+exports.getElections = (req, res) => {
  
   Election.findAll()
     .then((data) => {
@@ -58,7 +59,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findPendingElections = (req, res) => {
+exports.getPendingElections = (req, res) => {
   const status = "en attente";
   Election.findAll({
     where: { status: status }
@@ -79,8 +80,8 @@ exports.findPendingElections = (req, res) => {
       });
     });
 };
-exports.findCompletedElections = (req, res) => {
-  const status = "termine";
+exports.getCompletedElections = (req, res) => {
+  const status = "terminé";
   Election.findAll({
     where: { status: status }
   })
@@ -101,7 +102,7 @@ exports.findCompletedElections = (req, res) => {
     });
 };
 
-exports.findCurrentElections = (req, res) => {
+exports.getCurrentElections = (req, res) => {
   const status = "en cours";
   Election.findAll({
     where: { status: status }
@@ -123,8 +124,8 @@ exports.findCurrentElections = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
+exports.getElection = (req, res) => {
+  const id = req.params.electionId;
   console.log("id:", id);
   Election.findByPk(id)
     .then((data) => {
@@ -144,12 +145,16 @@ exports.findOne = (req, res) => {
 };
 
 
-exports.update = (req, res) => {
+exports.updateElection = (req, res) => {
   console.log("req.body:",req.body);
 
-  const id = req.params.id;
-  console.log("req.param.id:",id);
+  if (!allowedStatus.includes(req[0].status) && req[0].status!=null) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
+    });
+  }
   // const name = req.params.name;
+  const id = req.params.electionId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Election.findByPk(id)
     .then((election) => {
@@ -191,9 +196,9 @@ exports.update = (req, res) => {
 };
 
 // Delete a candidate
-exports.delete = (req, res) => {
+exports.deleteElection = (req, res) => {
   console.log("delete:");
-  const id = req.params.id;
+  const id = req.params.electionId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Election.destroy({
     where: { id: id },
@@ -215,5 +220,33 @@ exports.delete = (req, res) => {
         message: "Erreur, Impossible de supprimer le election avec l'id" + id,
       });
     });
+};
+
+
+exports.startElection = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRETKEY);
+    const { id_student_card } = decoded;
+
+    const tokenRecord = await Token.findOne({ where: { token } });
+
+    if (!tokenRecord) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    // Delete the token from the database
+    // await Token.destroy({ where: { token } });
+
+    res.json({ message: "Bienvenue sur votre plateforme de vote en ligne Voteel" });
+  } catch (error) {
+    console.log("Error in startElection:", error.message);
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
 };
 

@@ -37,10 +37,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         role: {
             field: 'role',
-            type: Sequelize.STRING,
+            type: Sequelize.ENUM("basic","superviseur","admin"),
             allowNull: false,
-            default: 'non defini',
-            enum: ["non defini", "superviseur", "admin"]
+            default: 'basic',
         },
         twoFactorCode: {
             field:'two_factor_code',
@@ -69,6 +68,5 @@ module.exports = (sequelize, Sequelize) => {
             }
         }
     })
-    
     return User;
 };

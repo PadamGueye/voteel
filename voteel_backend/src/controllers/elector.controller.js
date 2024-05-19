@@ -1,8 +1,10 @@
 const db = require("../models/db.model");
-
 const Elector = db.elector;
 
-exports.add = (req, res) => {
+const allowedStatus = Elector.getAttributes().status.values
+
+
+exports.addElector = (req, res) => {
   if (Object.keys(req.body).length > 1) {
       return addElectors(req.body, res)
   } else {
@@ -12,7 +14,7 @@ exports.add = (req, res) => {
 const addElector = async (req, res) => {
   console.log("addElector:");
   console.log("req.length:", Object.keys(req).length);
-console.log("req:",req);
+  console.log("req:",req);
   if (!req[0].firstName) {
     return res.status(400).send({
       message: "le prenom ne doit pas etre null!",
@@ -31,6 +33,11 @@ console.log("req:",req);
   if (!req[0].email) {
     return res.status(400).send({
       message: "l'adresse mail ne doit pas etre null!",
+    });
+  }
+  if (!allowedStatus.includes(req[0].status)) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
     });
   }
   const elector = {
@@ -62,6 +69,11 @@ const addElectors = (dataList, res) => {
   const listObj = []
   const errorList = []
       dataList.forEach((element,i) => {
+        if (!allowedStatus.includes(element.status)) {
+          return res.status(400).send({
+            message: "Le status fourni n'est pas valide!",
+          });
+        }
       if( !element.firstName || !element.lastName || !element.email || !element.id_student_card ){
           errorList.push({
               "error" : `Les champs ${element.firtsName} ou ${element.lastName} ou ${element.email} ou ${element.id_student_card} ne doivent pas etre nul`,
@@ -114,7 +126,7 @@ const addMultipleElecteurs = async (listElectors, res, errorList, ) => {
       })
 }
 
-exports.findAll = (req, res) => {
+exports.getElectors = (req, res) => {
   Elector.findAll()
     .then((data) => {
       return res.send(data);
@@ -126,7 +138,7 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
+exports.getElector = (req, res) => {
   const id = req.params.id;
   console.log("id:", id);
   Elector.findByPk(id)
@@ -146,9 +158,13 @@ exports.findOne = (req, res) => {
     });
 };
 //Update elector
-exports.update = (req, res) => {
+exports.updateElector = (req, res) => {
   console.log("req.body:",req.body);
-
+  if (!allowedStatus.includes(req.body.status)) {
+    return res.status(400).send({
+      message: "Le status fourni n'est pas valide!",
+    });
+  }
   const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Elector.findByPk(id)
@@ -157,7 +173,7 @@ exports.update = (req, res) => {
       if (elector) {
           elector.firstName = req.body.firstName ? req.body.firstName : elector.firstName;
           elector.lastName = req.body.lastName ? req.body.lastName : elector.lastName;
-          elector.status = req.body.status ? req.body.role : elector.status
+          elector.status = req.body.status ? req.body.status : elector.status
           elector.email = req.body.role ? req.body.email : elector.email;
           elector.id_student_card = req.body.id_student_card ? req.body.id_student_card : elector.id_student_card;
           
@@ -195,7 +211,7 @@ exports.update = (req, res) => {
 };
 
 // Delete a candidate
-exports.delete = (req, res) => {
+exports.deleteElector = (req, res) => {
   console.log("delete:");
   const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";

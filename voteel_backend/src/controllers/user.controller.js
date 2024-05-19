@@ -5,12 +5,11 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const tokenController = require("./token.controller");
 const Elector = db.elector;
-
-
+const allowedRoles = User.getAttributes().role.values
 
 
 const generateToken = (id_student_card) => {
-  return jwt.sign({ id_student_card }, process.env.SECRETKEY, { expiresIn: "1h" });
+  return jwt.sign({ id_student_card }, process.env.SECRETKEY, { expiresIn: "1d" });
 };
 const sendAMail = async (secret,mailOptions) => {
   console.log("sendMail nodemailer:");
@@ -45,7 +44,9 @@ const sendAMail = async (secret,mailOptions) => {
 };
 exports.sendLink = async (req, res) => {
   try {
+    console.log("sendLink:");
     const electors = await Elector.findAll();
+    console.log("electors:",electors);
 
     for (const elector of electors) {
       const token = generateToken(elector.id_student_card);
@@ -56,7 +57,7 @@ exports.sendLink = async (req, res) => {
         subject: "Participation à l'élection du bureau de CEE de l'ESP",
         html: `<p>Cliquez sur ce lien pour accéder à l'application : ${link} </p>`,
         };
-        
+
       console.log("email:", elector.email);
 
       const sendMailResponse = await sendAMail(link,mailOptions);
@@ -86,8 +87,8 @@ exports.sendLink = async (req, res) => {
 };
 
 
-exports.create = async (req, res) => {
-  console.log("create new user:");
+exports.signup = async (req, res) => {
+  console.log("signup:");
   console.log("req:", req.body);
 
   if (!req.body.email) {
@@ -96,8 +97,8 @@ exports.create = async (req, res) => {
     });
   }
 
-  const allowedRoles = ["non defini", "superviseur", "admin"];
-  if (!allowedRoles.includes(req.body.role)) {
+ 
+  if (!allowedRoles.includes(req.body.role) && req.body.role!=null) {
     return res.status(400).send({
       message: "Le rôle fourni n'est pas valide!",
     });
@@ -128,7 +129,7 @@ exports.create = async (req, res) => {
 };
 
 
-exports.findAll = (req, res) => {
+exports.getUsers = (req, res) => {
 
   User.findAll()
     .then((data) => {
@@ -141,12 +142,15 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
+exports.getUser = (req, res) => {
+  console.log("getUser:");
+  console.log("req.params:",req.params);
+  const id = req.params.userId;
   console.log("id:", id);
   User.findByPk(id)
     .then((data) => {
       if (data) {
+        console.log("data:",data);
         return res.send(data);
       } else {
         return res.status(404).send({
@@ -161,22 +165,23 @@ exports.findOne = (req, res) => {
     });
 };
 
-exports.update = (req, res) => {
+exports.updateUser = (req, res) => {
+  console.log("update:");
+  console.log("test enum:",User.getAttributes().role.values);
   console.log("req.body:",req.body);
 
-  const id = req.params.id;
+  const id = req.params.userId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   User.findByPk(id)
     .then((user) => {
       if (user) {
-        const allowedRoles = ["non defini", "superviseur", "admin"];
         if (!allowedRoles.includes(req.body.role) && req.body.role!=null) {
           return res.status(400).send({
             message: "Le rôle fourni n'est pas valide!",
           });
         }
         const salt = bcrypt.genSaltSync(10, "a");
-        bcrypt.hash(req.body.password, salt).then((hash) => {
+        bcrypt.hash(req.body.password?req.body.password:user.password, salt).then((hash) => {
           user.password = hash;
           user.firstName = req.body.firstname ? req.body.firstname : user.firstname;
           user.lastName = req.body.lastname ? req.body.lastname : user.lastname;
@@ -217,8 +222,8 @@ exports.update = (req, res) => {
 };
 
 // Delete a user
-exports.delete = (req, res) => {
-  const id = req.params.id;
+exports.deleteUser = (req, res) => {
+  const id = req.params.userId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   User.destroy({
     where: { id: id },
@@ -246,9 +251,10 @@ const generateVerificationCode = () => {
 };
 
 
-exports.authenticateUser = async (req, res) => {
+exports.login = async (req, res) => {
 
   try {
+    console.log("login:");
       const { email, password } = req.body;
       const user = await User.findOne({
           where: {
@@ -262,14 +268,10 @@ exports.authenticateUser = async (req, res) => {
       if (!passwordMatch) {
           return res.status(401).json({ error: 'Authentication failed' });
       }
-      
-    // Générer un code de vérification
-    // const twoFactorCode = jwt.sign({ email }, process.env.TWO_FACTOR_SECRET_KEY, { expiresIn: '10m' });
     const twoFactorCode = generateVerificationCode();
     const twoFactorExpiry = new Date();
     twoFactorExpiry.setMinutes(twoFactorExpiry.getMinutes() + 10);
 
-    // Mettre à jour l'utilisateur avec le code de vérification et l'expiration
     user.twoFactorCode = twoFactorCode;
     user.twoFactorExpiry = twoFactorExpiry;
     await user.save();
@@ -308,7 +310,7 @@ exports.verifyUserAuthentification = async (req, res) =>{
     await user.save();
 
     const token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-          expiresIn: '30m',
+          expiresIn: '2h',
       });
 
     res.status(200).send({ token,user:{

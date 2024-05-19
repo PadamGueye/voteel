@@ -46,7 +46,6 @@ const saveVotes = (dataList, res) => {
   })
 } 
 
-
 const saveMultipleVotes = async (listVotes, res ) => {
   console.log("saveMultipleVotes:");
   const listCreated =[]
@@ -74,9 +73,7 @@ const saveMultipleVotes = async (listVotes, res ) => {
       })
 }
 
-
-
-exports.findAll = (req, res) => {
+exports.getVotes = (req, res) => {
   Vote.findAll()
     .then((data) => {
       return res.send(data);
