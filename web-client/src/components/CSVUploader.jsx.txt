@@ -1,0 +1,25 @@
+import {useCallback, useState} from "react";
+import {useDropzone} from "react-dropzone";
+
+const CSVUploader = ({ onFileUpload }) => {
+    const onDrop = useCallback((acceptedFiles) => {
+        if (acceptedFiles.length > 0) {
+            const file = acceptedFiles[0];
+            onFileUpload(file);
+        }
+    }, [onFileUpload]);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: '.csv',
+    });
+
+    return (
+        <div {...getRootProps()} className={"dropzone border border-dashed border-blue-700 h-32"} >
+            <input {...getInputProps()} />
+            <p>Glissez et déposez un fichier CSV ici, ou cliquez pour sélectionner un fichier.</p>
+        </div>
+    );
+};
+
+export default CSVUploader;
