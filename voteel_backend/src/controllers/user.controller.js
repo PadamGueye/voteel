@@ -11,6 +11,12 @@ const allowedRoles = User.getAttributes().role.values
 const generateToken = (id_student_card) => {
   return jwt.sign({ id_student_card }, process.env.SECRETKEY, { expiresIn: "1d" });
 };
+async function hashPassword(password){
+  return bcrypt.hash(password, 10);
+}
+const comparePassword = async (password, hashedPassword) => {
+  return await bcrypt.compare(password, hashedPassword);
+};
 const sendAMail = async (secret,mailOptions) => {
   console.log("sendMail nodemailer:");
   var transporter = nodemailer.createTransport({
@@ -103,6 +109,7 @@ exports.signup = async (req, res) => {
       message: "Le rôle fourni n'est pas valide!",
     });
   }
+  req.body.password = await hashPassword(req.body.password);
 
   const user = {
     firstName: req.body.firstName,
@@ -180,8 +187,7 @@ exports.updateUser = (req, res) => {
             message: "Le rôle fourni n'est pas valide!",
           });
         }
-        const salt = bcrypt.genSaltSync(10, "a");
-        bcrypt.hash(req.body.password?req.body.password:user.password, salt).then((hash) => {
+        bcrypt.hash(req.body.password?req.body.password:user.password, 10).then((hash) => {
           user.password = hash;
           user.firstName = req.body.firstname ? req.body.firstname : user.firstname;
           user.lastName = req.body.lastname ? req.body.lastname : user.lastname;
@@ -247,7 +253,7 @@ exports.deleteUser = (req, res) => {
     });
 };
 const generateVerificationCode = () => {
-  return Math.floor(10000000 + Math.random() * 90000000).toString();
+  return Math.floor(10000000 + Math.random() * 60000000).toString();
 };
 
 
@@ -261,10 +267,9 @@ exports.login = async (req, res) => {
               email: email
           }});
       if (!user) {
-          return res.status(401).json({ error: 'Authentication failed ' });
+        return res.status(401).json({ error: 'Authentication failed ' });
       }
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      console.log("passwordMatch:",passwordMatch);
+      const passwordMatch = await comparePassword(password, user.password);
       if (!passwordMatch) {
           return res.status(401).json({ error: 'Authentication failed' });
       }
@@ -279,12 +284,16 @@ exports.login = async (req, res) => {
     const mailOptions = {
       from: '"Voteel" <no-reply@voteel.esp.sn>',
       to: user.email,
-      // to: 'mousassnd553@gmail.com',
       subject: 'Votre code de vérification',
       text: `Votre code de vérification est : ${twoFactorCode}`
     };
     const sendAMailResponse = await sendAMail(twoFactorCode,mailOptions);
-    if(sendAMailResponse.status==200){ res.status(200).send('mail envoyé avec success' );}
+    if(sendAMailResponse.status===200){
+      res.json({
+      code: 200,
+      msg: "E-mail de vérification envoyé avec succès",
+      user: { email: user.email, role : user.role }
+    });}
 
   } catch (error) {
       res.status(500).json({ error: 'Login failed' });
@@ -300,9 +309,10 @@ exports.verifyUserAuthentification = async (req, res) =>{
 
     const now = new Date();
     if (twoFactorCode !== user.twoFactorCode || now > user.twoFactorExpiry) {
-      user.twoFactorCode = null;
-      user.twoFactorExpiry = null;
-      await user.save();
+      //Si l'utilisateur s'est trompé il ne pourra pas l'utiliser à nouveau, c'est mieux de lui laisser retenter
+      //user.twoFactorCode = null;
+      //user.twoFactorExpiry = null;
+      //await user.save();
       return res.status(401).send({ message: 'Code de vérification expiré ou invalide' });
     }
     user.twoFactorCode = null;

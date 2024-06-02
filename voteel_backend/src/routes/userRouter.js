@@ -8,7 +8,7 @@ const {defineUserRoles} = require("../roles/userRoles");
 router.post('/login', userController.login);
 router.post('/verify', userController.verifyUserAuthentification);
 router.get('/:userId', allowIfLoggedin,grantAccess(defineUserRoles,['readAny','readOwn'], 'profile'), userController.getUser);
-router.post('/signup', allowIfLoggedin,grantAccess(defineUserRoles,['createAny'], 'profile') , userController.signup);
+router.post('/signup', userController.signup);
 router.post('/sendLink', allowIfLoggedin,grantAccess(defineUserRoles,['createAny'], 'link') , userController.sendLink);
 router.get('/', allowIfLoggedin, grantAccess(defineUserRoles,['readAny'], 'profile'), userController.getUsers);
 router.put('/:userId', allowIfLoggedin, grantAccess(defineUserRoles, ['updateAny','updateOwn'], 'profile'), userController.updateUser);

@@ -53,7 +53,7 @@ module.exports = (sequelize, Sequelize) => {
           }
     },
     {
-    hooks: {
+    /*hooks: {
             beforeCreate: async (user) => {
                 if (user.password) {
                     const salt = await bcrypt.genSaltSync(10, 'a');
@@ -67,6 +67,8 @@ module.exports = (sequelize, Sequelize) => {
                 }
             }
         }
+
+     */
     })
     return User;
 };
