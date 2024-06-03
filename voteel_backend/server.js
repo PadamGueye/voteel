@@ -9,6 +9,7 @@ const db = require("./src/models/db.model.js");
 const authenticateToken = require("./src/middlewares/authenticateToken");
 const mainRoute = require("./src/routes/mainRouter");
 const errorHandler = require("./src/middlewares/errorMiddleware");
+const path = require("path");
 
 
 
@@ -22,6 +23,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname,`images`)))
 app.use(authenticateToken);
 app.use("/", mainRoute);
 app.use(errorHandler);

@@ -11,9 +11,9 @@ router.get("/completedElections", allowIfLoggedin, grantAccess(defineElectionRol
 router.get("/currentElections", allowIfLoggedin, grantAccess(defineElectionRoles, "readAny", "election"), electionController.getCurrentElections);
 router.get("/pendingElections", allowIfLoggedin, grantAccess(defineElectionRoles, "readAny", "election"), electionController.getPendingElections);
 router.get("/start", electionController.startElection);
-router.get("/:electionId", allowIfLoggedin, grantAccess(defineElectionRoles, "readAny", "election") ,electionController.getElection);
-router.put("/:electionId", allowIfLoggedin, grantAccess(defineElectionRoles, "updateAny", "election"), electionController.updateElection);
-router.delete("/:electionId", allowIfLoggedin, grantAccess(defineElectionRoles, "deleteAny", "election"), electionController.deleteElection);
+router.get("/:id", allowIfLoggedin, grantAccess(defineElectionRoles, "readAny", "election") ,electionController.getElection);
+router.put("/:id", allowIfLoggedin, grantAccess(defineElectionRoles, "updateAny", "election"), electionController.updateElection);
+router.delete("/:id", allowIfLoggedin, grantAccess(defineElectionRoles, "deleteAny", "election"), electionController.deleteElection);
 
 
 module.exports = router;

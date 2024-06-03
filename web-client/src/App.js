@@ -28,6 +28,8 @@ import Reclamation from "./pages/reclamation";
 import ReclamationSuccess from "./pages/commons/ReclamSuccess";
 import EditorEtudiants from "./pages/editor/EditorEtudiants";
 import TwoFactorAuh from "./pages/auth/TwoFactorAuth";
+import Elections from "./pages/admin/Elections";
+import CreateElection from "./pages/admin/CreateElection";
 
 function EditcChambre() {
     return null;
@@ -81,6 +83,8 @@ function App() {
                        <Route path="/admin" element={<RequireAuth role={[Types.ADMIN]} ><Utilisateurs /></RequireAuth>} />
                        <Route path="/admin/create-user" element={<RequireAuth role={[Types.ADMIN]} ><CreateUser /></RequireAuth>} />
                        <Route path="/admin/create-users" element={<RequireAuth role={[Types.ADMIN]} ><CreateUsers /></RequireAuth>} />
+                       <Route path="/admin/elections" element={<RequireAuth role={[Types.ADMIN]} ><Elections /></RequireAuth>} />
+                       <Route path="/admin/create-election" element={<RequireAuth role={[Types.ADMIN]} ><CreateElection /></RequireAuth>} />
                        <Route path="/admin/chambres" element={<RequireAuth role={[Types.ADMIN]} ><Chambres /></RequireAuth>} />
                        <Route path="/admin/create-room" element={<RequireAuth role={[Types.ADMIN]} ><CreateChambre /></RequireAuth>} />
                        <Route path="/admin/create-rooms" element={<RequireAuth role={[Types.ADMIN]} ><CreateChambres /></RequireAuth>} />

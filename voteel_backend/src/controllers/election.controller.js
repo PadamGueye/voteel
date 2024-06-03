@@ -125,7 +125,7 @@ exports.getCurrentElections = (req, res) => {
 };
 
 exports.getElection = (req, res) => {
-  const id = req.params.electionId;
+  const id = req.params.id;
   console.log("id:", id);
   Election.findByPk(id)
     .then((data) => {
@@ -154,7 +154,7 @@ exports.updateElection = (req, res) => {
     });
   }
   // const name = req.params.name;
-  const id = req.params.electionId;
+  const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Election.findByPk(id)
     .then((election) => {
@@ -198,7 +198,7 @@ exports.updateElection = (req, res) => {
 // Delete a candidate
 exports.deleteElection = (req, res) => {
   console.log("delete:");
-  const id = req.params.electionId;
+  const id = req.params.id;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   Election.destroy({
     where: { id: id },

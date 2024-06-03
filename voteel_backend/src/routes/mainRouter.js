@@ -6,6 +6,7 @@ const electorRouter = require('./electorRouter')
 const candidateRouter = require('./candidateRouter')
 const positionRouter = require('./positionRouter')
 const voteRouter = require('./voteRouter')
+const path = require("path");
 
 router.use("/users", userRouter);
 router.use("/elections", electionRouter)

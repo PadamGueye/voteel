@@ -7,9 +7,9 @@ const {definePositionRoles} = require("../roles/positionRole");
 
 router.post("/", allowIfLoggedin, grantAccess(definePositionRoles, "createAny", "position") , positionController.addPosition);
 router.get("/", allowIfLoggedin , grantAccess(definePositionRoles, "readAny", "position") , positionController.getPositions);
-router.get("/:positionId", allowIfLoggedin, grantAccess(definePositionRoles, "readAny", "position") , positionController.getPosition);
-router.put("/:positionId", allowIfLoggedin, grantAccess(definePositionRoles, "updateAny", "position"), positionController.updatePosition);
-router.delete("/:positionId", allowIfLoggedin, grantAccess(definePositionRoles, "deleteAny", "position"), positionController.deletePosition);
+router.get("/:id", allowIfLoggedin, grantAccess(definePositionRoles, "readAny", "position") , positionController.getPosition);
+router.put("/:id", allowIfLoggedin, grantAccess(definePositionRoles, "updateAny", "position"), positionController.updatePosition);
+router.delete("/:id", allowIfLoggedin, grantAccess(definePositionRoles, "deleteAny", "position"), positionController.deletePosition);
 
 
 module.exports = router;

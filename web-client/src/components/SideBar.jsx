@@ -37,7 +37,7 @@ const SideBar = ({ openSidebar, handleOpenSideBar, userRole,onSignoutClick}) =>{
                     {
                         (userRole === Types.ADMIN) &&
                         (<li>
-                            <Link to={"/admin/chambres"} className={`flex items-center px-8 py-2 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
+                            <Link to={"/admin/elections"} className={`flex items-center px-8 py-2 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
                                 <MdOutlineBedroomChild className={`flex-shrink-0 w-5 h-5 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9]  dark:group-hover:text-white`} />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Elections</span>
                             </Link>
