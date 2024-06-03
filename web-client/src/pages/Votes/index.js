@@ -1,10 +1,11 @@
-import MainLayout from "../../../layout/MainLayout";
-import {Types} from "../../../constants/Types";
-import StatesModal from "../../../components/StatesModal";
-import MainModal from "../../../components/MainModal";
-import React, {useState} from "react";
+import MainLayout from "../../layout/MainLayout";
+import {Types} from "../../constants/Types";
+import StatesModal from "../../components/StatesModal";
+import MainModal from "../../components/MainModal";
+import React, {useEffect, useState} from "react";
 import useVotes from "./useVotes";
-import CandidateCard from "../../../components/candidateCard";
+import CandidateCard from "../../components/candidateCard";
+import {useParams} from "react-router-dom";
 
 const Position = () =>{
     const {
@@ -18,22 +19,16 @@ const Position = () =>{
             selectedUser, setSelectedUser,
             positions, setPositions,
             candidates, setCandidates,
+            selectedCandidates, setSelectedCandidates,
+            handleSelect,
             resetStateModal,
             onDeleteUser,
             onResetSecret,
             navigate
         } = useVotes();
-    const [selectedCandidates, setSelectedCandidates] = useState({});
-    const handleSelect = (positionId, candidateId) => {
-        setSelectedCandidates((prevSelected) => ({
-            ...prevSelected,
-            [positionId]: candidateId,
-        }));
-        console.log(selectedCandidates)
-    };
 
     return(
-        <MainLayout userRole={Types.ADMIN}>
+        <div>
             <div className={"px-10 py-2 flex flex-col items-center"}>
                 <StatesModal showModal={stateModal.show} title={stateModal.title} type={stateModal.type} message={stateModal.message} onSubmit={()=>{navigate('/admin');resetStateModal()}} onCancel={resetStateModal}/>
                 <MainModal showModal={showMainModal} title={`Vous êtes sur le point de voter pour les elections, êtes vous sûre de vouloir continuer ?`} onCancel={()=>{setShowMainModal(false); resetStateModal()}} onSubmit={()=>{ setShowMainModal(false);  onResetSecret();}} />
@@ -67,7 +62,7 @@ const Position = () =>{
                     Voter
                 </button>
             </div>
-        </MainLayout>
+        </div>
     )
 }
 export default Position;

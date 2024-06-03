@@ -34,7 +34,8 @@ import Position from "./pages/admin/Positions";
 import CreatePosition from "./pages/admin/CreatePosition";
 import Candidates from "./pages/admin/Candidates";
 import CreateCandidate from "./pages/admin/CreateCandidate";
-import Votes from "./pages/admin/Votes";
+import Votes from "./pages/Votes";
+import VoteAccessDeny from "./pages/commons/VoteAccessDeny";
 
 function EditcChambre() {
     return null;
@@ -91,7 +92,7 @@ function App() {
                        <Route path="/admin/elections" element={<RequireAuth role={[Types.ADMIN]} ><Elections /></RequireAuth>} />
                        <Route path="/admin/create-election" element={<RequireAuth role={[Types.ADMIN]} ><CreateElection /></RequireAuth>} />
                        <Route path="/admin/positions" element={<RequireAuth role={[Types.ADMIN]} ><Position /></RequireAuth>} />
-                       <Route path="/admin/votes" element={<RequireAuth role={[Types.ADMIN]} ><Votes /></RequireAuth>} />
+                       <Route path="/votes/:token" element={<Votes />} />
                        <Route path="/admin/create-position" element={<RequireAuth role={[Types.ADMIN]} ><CreatePosition /></RequireAuth>} />
                        <Route path="/admin/candidates" element={<RequireAuth role={[Types.ADMIN]} ><Candidates /></RequireAuth>} />
                        <Route path="/admin/create-candidate" element={<RequireAuth role={[Types.ADMIN]} ><CreateCandidate /></RequireAuth>} />
@@ -106,6 +107,7 @@ function App() {
                        <Route path="/user-profile/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.BASIC]} ><UserProfile /></RequireAuth>} />
                        <Route path="/edit-user/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.BASIC]} ><EditUser /></RequireAuth>} />
                        <Route path="/access-denied" element={<AccessDeny />} />
+                       <Route path="/vote-access-denied" element={<VoteAccessDeny />} />
                        <Route path="*" element={<NotFound />} />
                    </Routes>
                </BrowserRouter>

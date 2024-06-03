@@ -1,14 +1,10 @@
 import {API} from "../config/host";
 import {api} from "./configs/AxiosConfigs";
 
-const BASE_ELECTION = `${API}/elections`;
-export const ElectionAPI = {
-    addElection : async function (data){
-        return await api.post(`${BASE_ELECTION}/`,
-            {
-                name : data.name,
-                status : data.status
-            })
+const BASE_ELECTION = `${API}/votes`;
+export const VoteAPI = {
+    vote : async function (data){
+        return await api.post(`${BASE_ELECTION}/`, data)
     },
     verify : async function (otp, email){
         return await api.post(`${BASE_ELECTION}/verify`,
@@ -20,10 +16,10 @@ export const ElectionAPI = {
     createUser : async function (userData){
         return await api.post(`${BASE_ELECTION}/signup`, userData)
     },
-    startElection : async function (token){
-        return await api.get(`${BASE_ELECTION}/startElection/?token=${token}`)
+    getUserById : async function (userId){
+        return await api.get(`${BASE_ELECTION}/${userId}`)
     },
-    getElections : async function (){
+    getPositions : async function (){
         return await api.get(`${BASE_ELECTION}/`)
     },
     getStudents : async function (){

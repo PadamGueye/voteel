@@ -243,7 +243,7 @@ exports.startElection = async (req, res) => {
     // Delete the token from the database
     // await Token.destroy({ where: { token } });
 
-    res.json({ message: "Bienvenue sur votre plateforme de vote en ligne Voteel" });
+    res.status(200).json({ message: "Bienvenue sur votre plateforme de vote en ligne Voteel" });
   } catch (error) {
     console.log("Error in startElection:", error.message);
     return res.status(400).json({ message: "Invalid or expired token" });

@@ -56,12 +56,12 @@ exports.sendLink = async (req, res) => {
 
     for (const elector of electors) {
       const token = generateToken(elector.id_student_card);
-      const link = "http://localhost:5000?token=" + token;
+      const link = process.env.REMOTE_CLIENT+"/votes/" + token;
       const mailOptions = {
         from: '"Voteel" <no-reply@voteel.esp.sn>',
         to: elector.email,
         subject: "Participation à l'élection du bureau de CEE de l'ESP",
-        html: `<p>Cliquez sur ce lien pour accéder à l'application : ${link} </p>`,
+        html: `<p>Cliquez sur ce lien pour accéder à l'application : <a href="${link}">Voteel plateforme</a></p>`,
         };
 
       console.log("email:", elector.email);

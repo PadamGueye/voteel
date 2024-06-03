@@ -1,9 +1,10 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {createColumnHelper} from "@tanstack/react-table";
-import UserActionColumn from "../../../components/UserActionColumn";import {ElectionAPI} from "../../../api/ElectionAPI";
-import {PositionAPI} from "../../../api/PositionAPI";
-import {CandidateAPI} from "../../../api/CandidateAPI";
+import UserActionColumn from "../../components/UserActionColumn";import {ElectionAPI} from "../../api/ElectionAPI";
+import {PositionAPI} from "../../api/PositionAPI";
+import {CandidateAPI} from "../../api/CandidateAPI";
+import {VoteAPI} from "../../api/VoteAPI";
 
 const usePositions = () => {
     const navigate = useNavigate();
@@ -17,6 +18,17 @@ const usePositions = () => {
     const [selectedUser, setSelectedUser] = useState("");
     const [candidates, setCandidates] = useState([]);
     const [positions, setPositions] = useState([]);
+    const [selectedCandidates, setSelectedCandidates] = useState({});
+    const handleSelect = (positionId, candidateId) => {
+        setSelectedCandidates((prevSelected) => ({
+            ...prevSelected,
+            [positionId]: candidateId,
+        }));
+        console.log(selectedCandidates)
+    };
+
+    const {token} = useParams();
+
 
 
     const resetStateModal = ()=>{
@@ -47,11 +59,13 @@ const usePositions = () => {
         })
     }
     const onResetSecret = () => {
-        /*stateModal.type = "loading";
+        stateModal.type = "loading";
         stateModal.title = "Votre demande de reinitilisation de secret est en cours de traitement.";
         stateModal.show = true;
         setStateModal((prevState) => ({ ...prevState, ...stateModal  }));
-        AdminAPI.resetSecret(selectedUser?.id).then((res)=>{
+        const formattedSelectedCandidates = Object.values(selectedCandidates).map(id => ({ id_candidate: id }));
+
+        VoteAPI.vote(formattedSelectedCandidates).then((res)=>{
             stateModal.type = "succes";
             stateModal.title = "Opération réussie";
             stateModal.message = "Le secret d'un utilisateur a été reinialisé avec succès.";
@@ -66,10 +80,16 @@ const usePositions = () => {
             setStateModal((prevState) => ({ ...prevState, ...stateModal }));
             setLoading(false);
         })
-         */
     }
     useEffect(() => {
         setLoading(true);
+        if(!token){
+            navigate("/vote-access-denied");
+        }
+        const permission = ElectionAPI.startElection(token);
+        if (permission.status !== 200){
+            navigate("/vote-access-denied");
+        }
         PositionAPI.getPositions().then((res)=>{
             setUserList([]);
             setPositions(res.data);
@@ -115,6 +135,8 @@ const usePositions = () => {
         selectedUser, setSelectedUser,
         positions, setPositions,
         candidates, setCandidates,
+        selectedCandidates, setSelectedCandidates,
+        handleSelect,
         resetStateModal,
         onDeleteUser,
         onResetSecret,
