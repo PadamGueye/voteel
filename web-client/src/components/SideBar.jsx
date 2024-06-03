@@ -1,9 +1,9 @@
 import {Link, useLocation} from "react-router-dom";
 import ButtonSubmit from "./ButtonSubmit";
 import Logo from "../../src/assets/ccee-logo.png"
-import {FaEdit, FaInfo} from "react-icons/fa";
+import {FaEdit, FaInfo, FaRegListAlt} from "react-icons/fa";
 import {Types} from "../constants/Types";
-import {MdLowPriority, MdOutlineBedroomChild} from "react-icons/md";
+import {MdLowPriority, MdOutlineBedroomChild, MdOutlineHowToVote} from "react-icons/md";
 import React from "react";
 import {LuUserSquare2} from "react-icons/lu";
 
@@ -40,6 +40,22 @@ const SideBar = ({ openSidebar, handleOpenSideBar, userRole,onSignoutClick}) =>{
                             <Link to={"/admin/elections"} className={`flex items-center px-8 py-2 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
                                 <MdOutlineBedroomChild className={`flex-shrink-0 w-5 h-5 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9]  dark:group-hover:text-white`} />
                                 <span className="flex-1 ml-3 whitespace-nowrap">Elections</span>
+                            </Link>
+                        </li>)
+                    }{
+                        (userRole === Types.ADMIN) &&
+                        (<li>
+                            <Link to={"/admin/positions"} className={`flex items-center px-8 py-2 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
+                                <MdOutlineHowToVote className={`flex-shrink-0 w-5 h-5 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9]  dark:group-hover:text-white`} />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Positions</span>
+                            </Link>
+                        </li>)
+                    }{
+                        (userRole === Types.ADMIN) &&
+                        (<li>
+                            <Link to={"/admin/candidates"} className={`flex items-center px-8 py-2 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
+                                <FaRegListAlt className={`flex-shrink-0 w-5 h-5 ${pathName === "/admin/chambres" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9]  dark:group-hover:text-white`} />
+                                <span className="flex-1 ml-3 whitespace-nowrap">Candidats</span>
                             </Link>
                         </li>)
                     }

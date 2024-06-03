@@ -3,7 +3,7 @@ import {Types} from "../../../constants/Types";
 import StatesModal from "../../../components/StatesModal";
 import MainModal from "../../../components/MainModal";
 import React from "react";
-import useCreatePosition from "./useCreatePosition";
+import useCreateElection from "./useCreateElection";
 import AddElectionForm from "../../../components/Admin/AddElectionForm";
 import PreviewElection from "../../../components/Admin/PreviewElection";
 
@@ -22,7 +22,7 @@ const CreateElection = () =>{
        onPreview,
        onSubmit,
        onCancel,
-   } = useCreatePosition();
+   } = useCreateElection();
 
     return(
         <MainLayout userRole={Types.ADMIN}>

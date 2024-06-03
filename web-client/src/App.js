@@ -30,6 +30,11 @@ import EditorEtudiants from "./pages/editor/EditorEtudiants";
 import TwoFactorAuh from "./pages/auth/TwoFactorAuth";
 import Elections from "./pages/admin/Elections";
 import CreateElection from "./pages/admin/CreateElection";
+import Position from "./pages/admin/Positions";
+import CreatePosition from "./pages/admin/CreatePosition";
+import Candidates from "./pages/admin/Candidates";
+import CreateCandidate from "./pages/admin/CreateCandidate";
+import Votes from "./pages/admin/Votes";
 
 function EditcChambre() {
     return null;
@@ -85,6 +90,11 @@ function App() {
                        <Route path="/admin/create-users" element={<RequireAuth role={[Types.ADMIN]} ><CreateUsers /></RequireAuth>} />
                        <Route path="/admin/elections" element={<RequireAuth role={[Types.ADMIN]} ><Elections /></RequireAuth>} />
                        <Route path="/admin/create-election" element={<RequireAuth role={[Types.ADMIN]} ><CreateElection /></RequireAuth>} />
+                       <Route path="/admin/positions" element={<RequireAuth role={[Types.ADMIN]} ><Position /></RequireAuth>} />
+                       <Route path="/admin/votes" element={<RequireAuth role={[Types.ADMIN]} ><Votes /></RequireAuth>} />
+                       <Route path="/admin/create-position" element={<RequireAuth role={[Types.ADMIN]} ><CreatePosition /></RequireAuth>} />
+                       <Route path="/admin/candidates" element={<RequireAuth role={[Types.ADMIN]} ><Candidates /></RequireAuth>} />
+                       <Route path="/admin/create-candidate" element={<RequireAuth role={[Types.ADMIN]} ><CreateCandidate /></RequireAuth>} />
                        <Route path="/admin/chambres" element={<RequireAuth role={[Types.ADMIN]} ><Chambres /></RequireAuth>} />
                        <Route path="/admin/create-room" element={<RequireAuth role={[Types.ADMIN]} ><CreateChambre /></RequireAuth>} />
                        <Route path="/admin/create-rooms" element={<RequireAuth role={[Types.ADMIN]} ><CreateChambres /></RequireAuth>} />
