@@ -6,6 +6,21 @@ const nodemailer = require('nodemailer');
 const tokenController = require("./token.controller");
 const Elector = db.elector;
 const allowedRoles = User.getAttributes().role.values
+const fs = require('fs')
+const path = require('path')
+const logFile = path.resolve(__dirname, `../../logs/user.txt`)
+
+
+exports.createLog = (file, type, origin, item) => {
+    
+  const content = `Type:${type},Apply_on:${item},origin:${origin},date:${new Date().toISOString()}\n`
+  // appendFile function append new line existing file
+  fs.appendFile(file, content,(err) => {
+      if (err) throw err;
+              console.log(err);
+      });
+      console.log("Log created!!!!!!!!!")   
+}
 
 
 const generateToken = (id_student_card) => {
@@ -51,6 +66,7 @@ const sendAMail = async (secret,mailOptions) => {
 exports.sendLink = async (req, res) => {
   try {
     console.log("sendLink:");
+    console.log("req:",req);
     const electors = await Elector.findAll();
     console.log("electors:",electors);
 
@@ -72,11 +88,13 @@ exports.sendLink = async (req, res) => {
       if (sendMailResponse.status === 200) {
         await tokenController.saveToken(token)
         .then (data => {
+      this.createLog(logFile, 'loginUser', req.user.dataValues.email, "sending link success") 
           res.status(200).send({
             message: "sendLink successful!",
           });
         })
         .catch (error => {
+        this.createLog(logFile, 'loginUser', req.user.dataValues.email, "sending link failed") 
           res.status(404).send({
             message: "Aucun e-mail n'a été envoyé.",
           });
@@ -85,6 +103,7 @@ exports.sendLink = async (req, res) => {
     }
   } catch (error) {
     console.error("Error in sendLink:", error);
+    this.createLog(logFile, 'loginUser', req.user.dataValues.email, "sending link failed") 
     return res.status(500).send({
       message: "Une erreur est survenue lors de l'envoi des e-mails.",
       error: error.message,
@@ -98,6 +117,7 @@ exports.signup = async (req, res) => {
   console.log("req:", req.body);
 
   if (!req.body.email) {
+    this.createLog(logFile,'ErrorUser', 'system', err.message)
     return res.status(400).send({
       message: "L'adresse mail ne doit pas être nulle!",
     });
@@ -105,6 +125,7 @@ exports.signup = async (req, res) => {
 
  
   if (!allowedRoles.includes(req.body.role) && req.body.role!=null) {
+    this.createLog(logFile,'ErrorUser', 'system', err.message)
     return res.status(400).send({
       message: "Le rôle fourni n'est pas valide!",
     });
@@ -123,10 +144,12 @@ exports.signup = async (req, res) => {
 
   await User.create(user)
     .then((data) => {
+      this.createLog(logFile,'createUser',data.dataValues.email, data.dataValues.email)
       return res.send(data);
     })
     .catch((err) => {
       console.log("erreur:", err.message);
+      this.createLog(logFile,'ErrorUser', 'system', err.message)
       return res.status(400).send({
         message:
           err.message ||
@@ -175,7 +198,7 @@ exports.getUser = (req, res) => {
 exports.updateUser = (req, res) => {
   console.log("update:");
   console.log("test enum:",User.getAttributes().role.values);
-  console.log("req.body:",req.body);
+  console.log("req:",req.user.dataValues.email);
 
   const id = req.params.userId;
   const id_session = req.headers.id_session ? req.headers.id_session : "";
@@ -183,6 +206,7 @@ exports.updateUser = (req, res) => {
     .then((user) => {
       if (user) {
         if (!allowedRoles.includes(req.body.role) && req.body.role!=null) {
+          this.createLog(logFile, 'ErrorUser', 'updatedUser', 'role invalide')
           return res.status(400).send({
             message: "Le rôle fourni n'est pas valide!",
           });
@@ -199,28 +223,33 @@ exports.updateUser = (req, res) => {
           })
             .then((num) => {
               if (num == 1) {
+                this.createLog(logFile, 'updatedUser', req.user.dataValues.email, id)
                 return res.send({
                   message: "Updated user succcess!!.",
                 });
               } else {
+                this.createLog(logFile, 'ErrorUser', 'updatedUser', id+' notfound')
                 return res.send({
                   message: `Impossible de modifier l'utilisateur avec l'id=${id} !`,
                 });
               }
             })
             .catch((err) => {
+              this.createLog(logFile, 'ErrorUser', 'system', err.message)
               return res.status(400).send({
                 message: err.message,
               });
             });
         });
       } else {
+        this.createLog(logFile, 'ErrorUser', 'system', err.message)
         return res.status(401).send({
           message: `User ${id} not found`,
         });
       }
     })
     .catch((err) => {
+      this.createLog(logFile, 'ErrorUser', 'system', err.message)
       return res.status(401).send({
         message: err.message,
       });
@@ -230,16 +259,19 @@ exports.updateUser = (req, res) => {
 // Delete a user
 exports.deleteUser = (req, res) => {
   const id = req.params.userId;
+  console.log("req:",req.user.dataValues.email);
   const id_session = req.headers.id_session ? req.headers.id_session : "";
   User.destroy({
     where: { id: id },
   })
     .then((num) => {
       if (num == 1) {
+        this.createLog(logFile, 'deletedUser', req.user.dataValues.email, id)
         return res.send({
           message: "Utilisateur supprimé !",
         });
       } else {
+        this.createLog(logFile, 'ErrorUser', 'deletedUser ', id+' notFound')
         return res.send({
           message: `Impossible de supprimer l'utilisateur avec l'id=${id} !`,
         });
@@ -247,6 +279,7 @@ exports.deleteUser = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
+      this.createLog(logFile, 'ErrorUser', 'system ', err.message)
       return res.status(500).send({
         message: "Erreur, Impossible de supprimer l'utilisateur avec l'id" + id,
       });
@@ -255,7 +288,6 @@ exports.deleteUser = (req, res) => {
 const generateVerificationCode = () => {
   return Math.floor(10000000 + Math.random() * 60000000).toString();
 };
-
 
 exports.login = async (req, res) => {
 
@@ -267,10 +299,12 @@ exports.login = async (req, res) => {
               email: email
           }});
       if (!user) {
+        this.createLog(logFile,'ErrorUser', 'system', "User not found!")
         return res.status(401).json({ error: 'Authentication failed ' });
       }
       const passwordMatch = await comparePassword(password, user.password);
       if (!passwordMatch) {
+        this.createLog(logFile,'ErrorUser', 'system', "Password Incorrect!")
           return res.status(401).json({ error: 'Authentication failed' });
       }
     const twoFactorCode = generateVerificationCode();
@@ -289,6 +323,7 @@ exports.login = async (req, res) => {
     };
     const sendAMailResponse = await sendAMail(twoFactorCode,mailOptions);
     if(sendAMailResponse.status===200){
+      this.createLog(logFile, 'loginUser', user.email, "sending email success") 
       res.json({
       code: 200,
       msg: "E-mail de vérification envoyé avec succès",
@@ -296,6 +331,7 @@ exports.login = async (req, res) => {
     });}
 
   } catch (error) {
+    this.createLog(logFile, 'loginUser', user.email, "Login failed") 
       res.status(500).json({ error: 'Login failed' });
   }
 }
@@ -304,15 +340,13 @@ exports.verifyUserAuthentification = async (req, res) =>{
     const user = await User.findOne({ where: { email } });
 
     if (!user || !user.twoFactorCode) {
+      this.createLog(logFile,'verifyUser', 'system', "Code de vérification invalide!")
       return res.status(401).send({ message: 'Code de vérification invalide' });
     }
 
     const now = new Date();
     if (twoFactorCode !== user.twoFactorCode || now > user.twoFactorExpiry) {
-      //Si l'utilisateur s'est trompé il ne pourra pas l'utiliser à nouveau, c'est mieux de lui laisser retenter
-      //user.twoFactorCode = null;
-      //user.twoFactorExpiry = null;
-      //await user.save();
+      this.createLog(logFile,'verifyUser', 'system', "Code de vérification expiré ou invalide!")
       return res.status(401).send({ message: 'Code de vérification expiré ou invalide' });
     }
     user.twoFactorCode = null;
@@ -322,7 +356,7 @@ exports.verifyUserAuthentification = async (req, res) =>{
     const token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
           expiresIn: '2h',
       });
-
+    this.createLog(logFile, 'verifyUser', user.email, "verifyUser success") 
     res.status(200).send({ token,user:{
       "id": user.id,
       "firstName": user.firstName,
