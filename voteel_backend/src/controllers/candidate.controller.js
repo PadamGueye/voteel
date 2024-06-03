@@ -1,5 +1,8 @@
 const db = require("../models/db.model");
-
+const { createLog } = require("./user.controller");
+const fs = require('fs')
+const path = require('path')
+const logFile = path.resolve(__dirname, `../../logs/candidate.txt`)
 const Candidate = db.candidate;
 const Position = db.position;
 const allowedStatus = Candidate.getAttributes().status.values
@@ -13,9 +16,10 @@ exports.addCandidate = (req, res) => {
 }
 const addCandidate = async (req, res) => {
   console.log("addCandidate:");
-  console.log("req:", Object.keys(req).length);
+  console.log("req:", req);
 
   if (!req[0].firstName) {
+    createLog(logFile, 'addCandidate', req.email, req.dataValues.id)
     return res.status(400).send({
       message: "le prenom ne doit pas etre null!",
     });

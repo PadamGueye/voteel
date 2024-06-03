@@ -1,0 +1,21 @@
+Type:loginUser,Apply_on:sending email success,origin:mousassnd553@gmail.com,date:2024-06-03T21:10:56.988Z
+Type:verifyUser,Apply_on:verifyUser success,origin:mousassnd553@gmail.com,date:2024-06-03T21:11:51.555Z
+Type:verifyUser,Apply_on:Code de vérification invalide!,origin:system,date:2024-06-03T21:14:03.413Z
+Type:verifyUser,Apply_on:Code de vérification invalide!,origin:system,date:2024-06-03T21:14:33.046Z
+Type:loginUser,Apply_on:sending email success,origin:mousassnd553@gmail.com,date:2024-06-03T21:18:46.473Z
+Type:verifyUser,Apply_on:verifyUser success,origin:mousassnd553@gmail.com,date:2024-06-03T21:19:28.764Z
+Type:loginUser,Apply_on:sending email success,origin:mousassnd553@gmail.com,date:2024-06-03T22:11:21.297Z
+Type:verifyUser,Apply_on:verifyUser success,origin:mousassnd553@gmail.com,date:2024-06-03T22:12:38.936Z
+Type:createUser,Apply_on:salimata@gmail.com,origin:salimata@gmail.com,date:2024-06-03T22:16:51.474Z
+Type:ErrorUser,Apply_on:user is not defined,origin:system ,date:2024-06-03T22:29:33.739Z
+Type:ErrorUser,Apply_on:10notFound,origin:deletedUser ,date:2024-06-03T22:30:30.499Z
+Type:ErrorUser,Apply_on:10 notFound,origin:deletedUser ,date:2024-06-03T22:33:09.957Z
+Type:createUser,Apply_on:lamine@gmail.com,origin:lamine@gmail.com,date:2024-06-03T22:33:54.587Z
+Type:deletedUser,Apply_on:11,origin:mousassnd553@gmail.com,date:2024-06-03T22:34:01.837Z
+Type:updatedUser,Apply_on:7,origin:undefined,date:2024-06-03T22:39:03.124Z
+Type:updatedUser,Apply_on:7,origin:cheikh@gmail.com,date:2024-06-03T22:40:22.455Z
+Type:updatedUser,Apply_on:7,origin:cheikh@gmail.com,date:2024-06-03T22:41:21.246Z
+Type:updatedUser,Apply_on:7,origin:cheikh@gmail.com,date:2024-06-03T22:42:07.592Z
+Type:updatedUser,Apply_on:7,origin:cheikh@gmail.com,date:2024-06-03T22:43:50.225Z
+Type:updatedUser,Apply_on:7,origin:mousassnd553@gmail.com,date:2024-06-03T22:44:44.870Z
+Type:loginUser,Apply_on:sending link success,origin:mousassnd553@gmail.com,date:2024-06-03T22:51:42.475Z

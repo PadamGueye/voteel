@@ -1,4 +1,8 @@
 const db = require("../models/db.model");
+const { createLog } = require("./user.controller");
+const fs = require('fs')
+const path = require('path')
+const logFile = path.resolve(__dirname, `../../logs/election.txt`)
 
 const Election = db.election;
 
@@ -240,10 +244,7 @@ exports.startElection = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    // Delete the token from the database
-    // await Token.destroy({ where: { token } });
-
-    res.json({ message: "Bienvenue sur votre plateforme de vote en ligne Voteel" });
+    res.status(200).json({ message: "Bienvenue sur votre plateforme de vote en ligne Voteel" });
   } catch (error) {
     console.log("Error in startElection:", error.message);
     return res.status(400).json({ message: "Invalid or expired token" });

@@ -1,4 +1,8 @@
 const db = require("../models/db.model");
+const { createLog } = require("./user.controller");
+const fs = require('fs')
+const path = require('path')
+const logFile = path.resolve(__dirname, `../../logs/elector.txt`)
 const Elector = db.elector;
 
 const allowedStatus = Elector.getAttributes().status.values
