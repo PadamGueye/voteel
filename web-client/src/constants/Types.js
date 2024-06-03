@@ -1,7 +1,7 @@
 export const Types = {
     ADMIN :"admin",
     EDITOR : "editor",
-    STUDENT : "student"
+    BASIC : "basic"
 }
 
 export const Departement =  {

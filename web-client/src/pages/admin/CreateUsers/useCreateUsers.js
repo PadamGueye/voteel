@@ -85,7 +85,7 @@ const useCreateUsers = ()=>{
     const validateData = async (entry) => {
         setStep("validation")
         const { role } = entry;
-        if (role !== Types.STUDENT) {
+        if (role !== Types.BASIC) {
             stateModal.type = "error";
             stateModal.title = "Erreur de création d'utilisateur"
             stateModal.message = `Le rôle de l'utilisateur est différent de student, vérifiez la console.`;

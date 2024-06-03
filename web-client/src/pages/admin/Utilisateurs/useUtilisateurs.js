@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {createColumnHelper} from "@tanstack/react-table";
-import {UserAPI} from "../../../api/UserAPI";
 import UserActionColumn from "../../../components/UserActionColumn";
+import {UserAPI} from "../../../api/UserAPI";
 
 const useUtilisateurs = () => {
     const navigate = useNavigate();
@@ -44,11 +44,11 @@ const useUtilisateurs = () => {
         })
     }
     const onResetSecret = () => {
-        stateModal.type = "loading";
+        /*stateModal.type = "loading";
         stateModal.title = "Votre demande de reinitilisation de secret est en cours de traitement.";
         stateModal.show = true;
         setStateModal((prevState) => ({ ...prevState, ...stateModal  }));
-        UserAPI.resetSecret(selectedUser?._id).then((res)=>{
+        AdminAPI.resetSecret(selectedUser?.id).then((res)=>{
             stateModal.type = "succes";
             stateModal.title = "Opération réussie";
             stateModal.message = "Le secret d'un utilisateur a été reinialisé avec succès.";
@@ -63,26 +63,26 @@ const useUtilisateurs = () => {
             setStateModal((prevState) => ({ ...prevState, ...stateModal }));
             setLoading(false);
         })
+         */
     }
     useEffect(() => {
         setLoading(true);
         UserAPI.getUsers().then((res)=>{
             setUserList([]);
-            res.data.data.map((user)=>{
+            res.data.map((user)=>{
                 const mappedUser = {
-                    num_carte : user?.num_carte,
-                    email: user?.email,
-                    prenom : user?.prenom,
-                    nom : user?.nom,
-                    telephone: user?.tel,
-                    role: user?.role.toUpperCase(),
-                    actif: <div className={"flex justify-center items-center gap-3"}><div className={`h-[14px] justify-center items-center  ${user?.confirmed ? "bg-green-500" : "bg-red-600"} flex justify-center items-center w-[14px] rounded`}></div></div> ,
+                    firstName : user?.firstName,
+                    lastName : user?.lastName,
+                    role : user?.role,
+                    email : user?.email,
+                    phone : user?.phone,
                     action : <UserActionColumn
-                                userRole={user?.role}
-                                onEdit={()=>{navigate(`/edit-user/${user?._id}`)}}
-                                onDelete={()=>{setShowMainModal(true); setSelectedUser(user?._id); setAction("delete")}}
-                                onView={()=>{navigate(`/user-profile/${user?._id}`)}}
-                                onSecretReset={()=>{setShowMainModal(true); setSelectedUser(user); setAction("resetSecret")}}
+                                onView={()=>{}}
+                                //onEdit={()=>{navigate(`/edit-user/${user?.id}`)}}
+                                onEdit={()=>{}}
+                                onDelete={()=>{setShowMainModal(true); setSelectedUser(user?.id); setAction("delete")}}
+                                //onSecretReset={()=>{setShowMainModal(true); setSelectedUser(user); setAction("resetSecret")}}
+                                onSecretReset={()=>{}}
                                 />
                 }
                 setUserList((prevUserList) => prevUserList.concat(mappedUser));

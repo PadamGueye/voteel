@@ -10,7 +10,7 @@ const useEditUser = ()=>{
     const [showMainModal, setShowMainModal] = useState(false);
     const [preview, setPreview] = useState(false);
     const [action, setAction] = useState("");
-    const emptyUserData = {num_carte : "", role : Types.STUDENT ,	email : "",	prenom : "", nom : "",	type : UserType.CEE, fonction : "",	tel : "", date_naissance : "",	lieu_naissance : "", num_identite : "",	nationalite : "", departement : "Génie Informatique", option : "", niveau : "1", sexe : "M"};
+    const emptyUserData = {num_carte : "", role : Types.BASIC ,	email : "",	prenom : "", nom : "",	type : UserType.CEE, fonction : "",	tel : "", date_naissance : "",	lieu_naissance : "", num_identite : "",	nationalite : "", departement : "Génie Informatique", option : "", niveau : "1", sexe : "M"};
     const [userData, setUserData] = useState(emptyUserData);
     const [loading, setLoading] = useState(false);
     const [formatedData, setFormatedData] = useState({});
@@ -57,7 +57,7 @@ const useEditUser = ()=>{
 
     const validateData = async (entry) => {
         const { role } = entry;
-        if (role !== Types.STUDENT && role !== Types.EDITOR  && role !==Types.ADMIN) {
+        if (role !== Types.BASIC && role !== Types.EDITOR  && role !==Types.ADMIN) {
             stateModal.type = "error";
             stateModal.title = "Erreur de création d'utilisateur"
             stateModal.message = `Le rôle de l'utilisateur est différent de student, vérifiez la console.`;
@@ -65,7 +65,7 @@ const useEditUser = ()=>{
             setStateModal((prevState) => ({ ...prevState, ...stateModal }));
             return false;
         }
-        if (role === Types.STUDENT) {
+        if (role === Types.BASIC) {
             const { num_carte, email, prenom, nom, tel, niveau, sexe } = entry;
 
             if (!num_carte || !email || !prenom || !nom || !tel || !niveau || !sexe) {
@@ -79,7 +79,7 @@ const useEditUser = ()=>{
             }
             setFormatedData({
                 num_carte: entry.num_carte,
-                role: Types.STUDENT,
+                role: Types.BASIC,
                 email: entry.email,
                 prenom: entry.prenom,
                 nom: entry.nom,

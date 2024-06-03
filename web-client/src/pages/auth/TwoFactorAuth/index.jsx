@@ -49,7 +49,7 @@ const TwoFactorAuh = () => {
                     }
                     <div className="font-Inter mt-10 md:mt-1 font-semibold text-xl md:text-2xl">
                         {
-                            signupData.etudiant?.role === Types.STUDENT ?
+                            signupData.etudiant?.role === Types.BASIC ?
                                 <p>Vérification de code secret</p>
                                 :
                                 <h1>Email vérification</h1>
@@ -57,7 +57,7 @@ const TwoFactorAuh = () => {
                     </div>
                     <div className="flex flex-row text-sm font-medium text-gray-400">
                         {
-                            signupData.etudiant?.role === Types.STUDENT ?
+                            signupData.etudiant?.role === Types.BASIC ?
                                 <p>Renseignez votre code secret personel !</p>
                                 :
                                 <p>Vérifiez le code dans votre mail {signupData.etudiant?.email && masquerEmail(signupData.etudiant?.email)}</p>
@@ -110,7 +110,7 @@ const TwoFactorAuh = () => {
                     <div className="mt-10 w-[100%]  flex flex-col items-center gap-10 md:w-[80%] md:px-10">
                         <ButtonSubmit onClick={handleConfirmOtp} isLoading={isLoading} />
                         {
-                            signupData.etudiant?.role !== Types.STUDENT && (<div className="flex flex-col items-center justify-center text-center text-sm space-x-1 text-gray-500">
+                            signupData.etudiant?.role !== Types.BASIC && (<div className="flex flex-col items-center justify-center text-center text-sm space-x-1 text-gray-500">
                                 <p>Vous n'avez pas reçu de code ?</p>
                                 <div className="flex flex-row gap-1">
                                     {

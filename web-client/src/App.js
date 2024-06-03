@@ -60,7 +60,7 @@ function App() {
                 })
             auth.login(access)
         } else if (!auth.user) {
-            //auth.logout();
+            auth.logout();
         }
 
     }, [auth])
@@ -87,10 +87,10 @@ function App() {
                        <Route path="/admin/edit-room/:chambreId" element={<RequireAuth role={[Types.ADMIN]} ><EditChambre /></RequireAuth>} />
                        <Route path="/editor" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR]} ><Reservations /></RequireAuth>} />
                        <Route path="/editor/etudiants" element={<RequireAuth role={[Types.ADMIN,Types.EDITOR]} ><EditorEtudiants /></RequireAuth>} />
-                       <Route path="/student" element={<RequireAuth role={[Types.STUDENT]}><StudentHome /></RequireAuth>} />
-                       <Route path="/student/reservation" element={<RequireAuth role={[Types.STUDENT]} ><Reservation /></RequireAuth>} />
-                       <Route path="/user-profile/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.STUDENT]} ><UserProfile /></RequireAuth>} />
-                       <Route path="/edit-user/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.STUDENT]} ><EditUser /></RequireAuth>} />
+                       <Route path="/student" element={<RequireAuth role={[Types.BASIC]}><StudentHome /></RequireAuth>} />
+                       <Route path="/student/reservation" element={<RequireAuth role={[Types.BASIC]} ><Reservation /></RequireAuth>} />
+                       <Route path="/user-profile/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.BASIC]} ><UserProfile /></RequireAuth>} />
+                       <Route path="/edit-user/:userId" element={<RequireAuth role={[Types.ADMIN, Types.EDITOR, Types.BASIC]} ><EditUser /></RequireAuth>} />
                        <Route path="/access-denied" element={<AccessDeny />} />
                        <Route path="*" element={<NotFound />} />
                    </Routes>

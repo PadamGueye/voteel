@@ -16,7 +16,7 @@ const EditUserForm = ({className, setUserData, userData})=>{
     return(
         <div className={className}>
             {
-                userData.role === Types.STUDENT &&
+                userData.role === Types.BASIC &&
                 (<>
                         <div className="mb-5">
                             <label htmlFor="date_naissance" className="block mb-2 text-sm font-medium text-primary-2 dark:text-white">Date de naissance</label>

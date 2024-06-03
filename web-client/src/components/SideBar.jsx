@@ -71,7 +71,7 @@ const SideBar = ({ openSidebar, handleOpenSideBar, userRole,onSignoutClick}) =>{
                         </li>)
                     }
                     {
-                        (userRole === Types.STUDENT) &&
+                        (userRole === Types.BASIC) &&
                         (<li>
                             <Link to={"/student"} className={`flex items-center px-8 py-2 ${pathName === "/student" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#4B87FF] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
                                 <FaEdit className={`flex-shrink-0 w-5 h-5 ${pathName === "/student" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9] hover:bg-[#171C49]  dark:group-hover:text-white`} />
@@ -80,7 +80,7 @@ const SideBar = ({ openSidebar, handleOpenSideBar, userRole,onSignoutClick}) =>{
                         </li>)
                     }
                     {
-                        (userRole === Types.STUDENT) &&
+                        (userRole === Types.BASIC) &&
                         (<li>
                             <Link to={"/student/reservation"} className={`flex items-center px-8 py-2 ${pathName === "/student/reservation" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353] "} hover:text-[#13A3E9] dark:text-white hover:bg-[#171C49] dark:hover:bg-gray-700 group`}>
                                 <FaInfo className={`flex-shrink-0 w-5 h-5 ${pathName === "/student/reservation" ? "text-[#13A3E9] bg-[#171C49]" : "text-[#535353]"} transition duration-75 dark:text-gray-400 group-hover:text-[#13A3E9]  dark:group-hover:text-white`} />

@@ -33,7 +33,7 @@ const Reservation = () =>{
 
 
     return(
-        <MainLayout userRole={Types.STUDENT} >
+        <MainLayout userRole={Types.BASIC} >
             <StatesModal showModal={stateModal.show} title={stateModal.title} type={stateModal.type} message={stateModal.message} onSubmit={()=>{navigate('/');resetStateModal()}} onCancel={resetStateModal}/>
             <MainModal showModal={showMainModal} title={"Vous êtes sur le point d'annuler votre réservation en cours, êtes vous sûre de vouloir continuer ?"} onCancel={()=>{setShowMainModal(false)}} onSubmit={()=>{handleRemove(); setShowMainModal(false)}} />
             {!roomReserved ?

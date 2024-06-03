@@ -38,7 +38,7 @@ const StudentHome = () => {
     const navigate = useNavigate();
 
     return(
-        <MainLayout userRole={Types.STUDENT}>
+        <MainLayout userRole={Types.BASIC}>
             <RoomInfoModal showModal={showInfoModal} selectedRoom={showRoomInfo} onSubmit={()=>{setShowMainModal(true)}} onCancel={()=>{setShowRoomInfo({}); setInfoModal(false)}}/>
             <StatesModal showModal={stateModal.show} title={stateModal.title} type={stateModal.type} message={stateModal.message} onSubmit={()=>{navigate('/student/reservation');resetStateModal()}} onCancel={resetStateModal}/>
             <MainModal showModal={showMainModal} title={"Vous êtes sur le point de réserver une chambre, êtes vous sûre de vouloir réserver vouloir continuer ?"} onCancel={()=>{setShowMainModal(false)}} onSubmit={()=>{handleReserve(auth.user?.num_carte); setShowMainModal(false)}} />

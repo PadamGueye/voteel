@@ -29,7 +29,7 @@ const Home = () => {
         else if (Types.EDITOR === auth.user?.role){
             return <Navigate to='/editor'/>
         }
-        else if ( Types.STUDENT === auth.user?.role){
+        else if ( Types.BASIC === auth.user?.role){
             return <Navigate to='/student'/>
         }
     }else{

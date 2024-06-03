@@ -3,13 +3,12 @@ import {useAuthStateContext} from "../context/AuthContextProvider";
 
 const Header = ({handleOpenSideBar}) =>{
     const [openUserMenu,setOpenUserMenu] = useState(false);
-    const {userInfo} = useAuthStateContext();
-    const userName = userInfo?.prenom ? userInfo?.prenom : "";
-    const userFamilyName = userInfo?.nom ? userInfo?.nom : "";
-    const userEmail = userInfo?.email ? userInfo?.email : "";
-    const carte_etudiant = userInfo?.num_carte ? userInfo?.num_carte : "";
-    const userRole = userInfo?.role ? userInfo?.role.toUpperCase() : "";
-    const userType = userInfo?.type ? " - "+userInfo?.type.toUpperCase() : "";
+    const {user} = useAuthStateContext();
+    const firstName = user?.firstName ? user?.firstName : "";
+    const userFamilyName = user?.lastName ? user?.lastName : "";
+    const userEmail = user?.email ? user?.email : "";
+    const userRole = user?.role ? user?.role.toUpperCase() : "";
+    const userType = user?.type ? " - "+user?.type.toUpperCase() : "";
 
 
     return(
@@ -32,7 +31,7 @@ const Header = ({handleOpenSideBar}) =>{
                                         </svg>
                                     </button>
                                     <div className={"flex flex-col"}>
-                                        <h1 className={"text-md text-black font-bold hidden md:inline"}>{`${userName.slice(0, 12)} ${userFamilyName}`}</h1>
+                                        <h1 className={"text-md text-black font-bold hidden md:inline"}>{`${firstName} ${userFamilyName}`}</h1>
                                         <p className={"text-[10px] font-bold text-right"}>
                                             {`${userRole}${userType}`}
                                         </p>
@@ -49,16 +48,13 @@ const Header = ({handleOpenSideBar}) =>{
                                     <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                                         {userEmail}
                                     </p>
-                                    <p className="text-sm text-black font-bold dark:text-white" role="none">
-                                        {carte_etudiant}
-                                    </p>
                                 </div>
                                 <ul className="py-1" role="none">
                                     <li>
-                                        <a href={`/user-profile/${userInfo?._id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Mon compte</a>
+                                        <a href={`/user-profile/${user?.id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Mon compte</a>
                                     </li>
                                     <li>
-                                        <a href={`/edit-user/${userInfo?._id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Editer mon profile</a>
+                                        <a href={`/edit-user/${user?.id}`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Editer mon profile</a>
                                     </li>
                                     <li>
                                         <a href="/reclamation" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Centre d'assistance</a>

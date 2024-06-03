@@ -88,7 +88,7 @@ const UseSignin = () =>{
             else if (auth.user?.role === Types.EDITOR) {
                 navigate('/editor');
             }
-            else if (auth.user?.role === Types.STUDENT) {
+            else if (auth.user?.role === Types.BASIC) {
                 if (false)
                 navigate('/student/reservation')
                 else{

@@ -18,7 +18,7 @@ export const UserAPI = {
             })
     },
     createUser : async function (userData){
-        return await api.post(`${BASE_USER}/`, userData)
+        return await api.post(`${BASE_USER}/signup`, userData)
     },
     getUserById : async function (userId){
         return await api.get(`${BASE_USER}/${userId}`)
